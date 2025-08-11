@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>A-Frame AR Example</title>
+    <script src="https://aframe.io/releases/1.4.0/aframe.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-ar@1.2.0/dist/aframe-ar.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aframe-obj-loader-component@1.1.0/dist/aframe-obj-loader-component.min.js"></script>
+  </head>
+  <body style="margin: 0; overflow: hidden;">
+    <a-scene embedded arjs>
+      <!-- Marker for AR -->
+      <a-marker preset="hiro">
+        <!-- Add a simple red box for testing -->
+        <a-box position="0 0.5 0" material="color: red;" scale="0.5 0.5 0.5"></a-box>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
+    <script>
+      // Ensure the site is served over HTTPS, localhost, or 127.0.0.1
+      if (
+        location.protocol !== 'https:' &&
+        location.hostname !== 'localhost' &&
+        location.hostname !== '127.0.0.1'
+      ) {
+        alert('AR.js requires HTTPS, localhost, or 127.0.0.1 to access the camera.');
+      }
+
+    //   // Debugging for camera access
+    //   navigator.mediaDevices
+    //     .getUserMedia({ video: true })
+    //     .then((stream) => {
+    //       console.log('Camera access granted.');
+    //       stream.getTracks().forEach((track) => track.stop());
+    //     })
+    //     .catch((error) => {
+    //       console.error('Camera access denied or unavailable:', error);
+    //       alert('Unable to access the camera. Please check your browser settings.');
+    //     });
+    </script>
+  </body>
+</html>

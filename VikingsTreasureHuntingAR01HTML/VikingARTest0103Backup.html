@@ -1,0 +1,60 @@
+<html>
+  <head>
+    <!-- A-Frame itself -->
+    <script src="https://aframe.io/releases/0.7.0/aframe.min.js"></script>
+    <script src="https://jeromeetienne.github.io/AR.js/aframe/build/aframe-ar.js"></script>
+  </head>
+
+  <body style="margin: 0px; overflow: hidden">
+    <a-scene embedded arjs>
+      <!-- <a-marker preset="hiro" smooth="true"> -->
+
+      <a-marker
+        smooth="true"
+        id="helmet-marker"
+        type="pattern"
+        url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-helmet.patt?v=1745929731528"
+      >
+        <a-entity
+          gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/Helmet_updated.glb?v=1745928637594"
+          scale="10 10 10"
+          position="0 0 0.5"
+        >
+          <a-animation
+            attribute="rotation"
+            to="0 360 0"
+            dur="12000"
+            repeat="indefinite"
+            easing="linear"
+          ></a-animation>
+
+          
+
+        </a-entity>
+      </a-marker>
+
+      <a-marker
+        id="horn-marker"
+        smooth="true"
+        type="pattern"
+        url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/horn-marker.patt?v=1745922699965"
+      >
+        <a-entity
+          gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/horn.glb?v=1745858729723"
+          scale="0.1 0.1 0.1"
+          position="0 0 0.2"
+        >
+          <a-animation
+            attribute="rotation"
+            to="0 360 0"
+            dur="12000"
+            repeat="indefinite"
+            easing="linear"
+          ></a-animation>
+        </a-entity>
+      </a-marker>
+
+      <a-entity camera> </a-entity>
+    </a-scene>
+  </body>
+</html>
