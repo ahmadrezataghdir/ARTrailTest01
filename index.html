@@ -55,20 +55,11 @@
    renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
-    <a-marker smooth="true" id="helmet-marker" type="pattern"
-      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-helmet.patt?v=1745929731528">
-
-      <!-- <a-text
-        value="Has protected Grim in many invasions and battles as a young Warrior.  When Grim settled to build the village, he added the symbol of the fish, showing his new status as a fisherman.
-        Grim's helmet was made of iron and was stolen by the Saxon Alfred who then lost it.  Rumours say it could be buried deep under the marshland of Grim's Village"      
-        position="-1 0 -2"
-        rotation="-90 0 0"
-        scale="0.5 0.5 0.5"
-        color="black">
-      </a-text> -->
+    <a-marker smooth="true" id="character01" type="pattern"
+      url="https://github.com/ahmadrezataghdir/ARTrailTest01/blob/main/Assets/Markers/pattern-character01CroppedB%26W02.patt">
 
       <a-entity
-        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsHelmet02.glb?v=1746903397395"
+        gltf-model="https://github.com/ahmadrezataghdir/ARTrailTest01/blob/main/Assets/Characters%20Animations/character01.png"
         scale="2.5 2.5 2.5" position="0.5 1 0.5"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
         sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundHelmet.mp3?v=1746961825461); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
@@ -76,7 +67,7 @@
 
     </a-marker>
 
-    <a-marker id="patternHornMarker" smooth="true" type="pattern"
+    <!-- <a-marker id="patternHornMarker" smooth="true" type="pattern"
       url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/horn-marker.patt?v=1745922699965">
       <a-entity gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsHornGLB.glb?v=1746953526195"
         scale="4 4 4" position="0 1 0"
@@ -113,7 +104,8 @@
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
         sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundSpoon.mp3?v=1746961813744); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
       </a-entity>
-    </a-marker>
+    </a-marker> -->
+    
 
     <a-entity camera> </a-entity>
   </a-scene>
