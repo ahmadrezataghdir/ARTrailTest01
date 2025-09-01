@@ -52,8 +52,8 @@
       top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
-      width: 80%;
-      max-width: 400px;
+      width: 95%;
+      max-width: 800px;
       z-index: 2000;
       display: none;
     }
@@ -69,10 +69,15 @@
       url="./Assets/Markers/character01M.patt">
       
       <a-entity
-        gltf-model="./Assets/CharactersAnimations/character01.png"
+        gltf-model="./Assets/CharactersAnimations/character01.glb"
         scale="2.5 2.5 2.5" position="0.5 1 0.5"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound="src: url(./Assets/Voices/SoundToken01VoiceKid01.mp3); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+        sound="src: url(./Assets/Voices/SoundToken01VoiceKid01.mp3); 
+               autoplay: false; 
+               volume: 4; 
+               distanceModel: linear; 
+               rolloffFactor: 0;
+               preload: true">
       </a-entity>
 
     </a-marker>
@@ -124,7 +129,7 @@
        src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
   <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
   
-<!-- <script>
+<script>
   let titleElement = null;
   let descriptionElement = null;
   let currentlyPlayingEntity = null;
@@ -179,7 +184,7 @@
           overlay.style.display = 'none';
         }, 0);
       }, delay);
-    } -->
+    }
   }
   
   function setupMarker(markerId, titleText, descriptionText) {
@@ -203,7 +208,7 @@
         if (entity && entity.components.sound) {
           // Only play if sound hasn't been played before
           if (!soundPlayed[markerId]) {
-            // For character01M, show token and play sound immediately
+            // For character01M, show token first
             if (markerId === 'character01M') {
               const tokenOverlay = document.getElementById('tokenOverlay');
               tokenOverlay.style.display = 'block';
@@ -214,12 +219,12 @@
               }
               entity.components.sound.playSound();
               currentlyPlayingEntity = entity;
+              soundPlayed[markerId] = true;
+              lastDetectedMarker = markerId;
               
               // Just hide token after 5 seconds
               setTimeout(() => {
                 tokenOverlay.style.display = 'none';
-                soundPlayed[markerId] = true;
-                lastDetectedMarker = markerId;
               }, 5000);
             } else {
               // For other markers, play sound immediately
