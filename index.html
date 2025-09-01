@@ -47,6 +47,16 @@
       z-index: 2000;
       display: none;
     }
+    .token-image {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 60%;
+      max-width: 400px;
+      z-index: 2000;
+      display: none;
+    }
   </style>
 </head>
 
@@ -56,7 +66,7 @@
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
     <a-marker smooth="true" id="character01M" type="pattern"
-      url="./Assets/Markers/pattern-character01CroppedB%26W02.patt">
+      url="./Assets/Markers/character01M.patt">
       
       <a-entity
         gltf-model="./Assets/CharactersAnimations/character01.png"
@@ -112,6 +122,7 @@
 
   <img id="congratsOverlay" class="overlay-image" 
        src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
+  <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
   
 <script>
   let titleElement = null;
@@ -192,15 +203,34 @@
         if (entity && entity.components.sound) {
           // Only play if sound hasn't been played before
           if (!soundPlayed[markerId]) {
-            // Stop current sound if any
-            if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
-              currentlyPlayingEntity.components.sound.stopSound();
+            // For character01M, show token first
+            if (markerId === 'character01M') {
+              const tokenOverlay = document.getElementById('tokenOverlay');
+              tokenOverlay.style.display = 'block';
+              
+              // Hide token and play sound after 5 seconds
+              setTimeout(() => {
+                tokenOverlay.style.display = 'none';
+                // Stop current sound if any
+                if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
+                  currentlyPlayingEntity.components.sound.stopSound();
+                }
+                // Play sound and mark as played
+                entity.components.sound.playSound();
+                currentlyPlayingEntity = entity;
+                soundPlayed[markerId] = true;
+                lastDetectedMarker = markerId;
+              }, 5000);
+            } else {
+              // For other markers, play sound immediately
+              if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
+                currentlyPlayingEntity.components.sound.stopSound();
+              }
+              entity.components.sound.playSound();
+              currentlyPlayingEntity = entity;
+              soundPlayed[markerId] = true;
+              lastDetectedMarker = markerId;
             }
-            // Play sound and mark as played
-            entity.components.sound.playSound();
-            currentlyPlayingEntity = entity;
-            soundPlayed[markerId] = true;
-            lastDetectedMarker = markerId; // Update last detected marker
           }
         }
       }
@@ -225,29 +255,29 @@
     "Has protected Grim in many invasions and battles as a young Warrior. When Grim settled to build the village, he added the symbol of the fish, showing his new status as a fisherman. Grim's helmet was made of iron and was stolen by the Saxon Alfred who then lost it. Rumours say it could be buried deep under the marshland of Grim's Village"
   );
 
-  setupMarker(
-    'patternHornMarker',
-    "The Yarl's Warhorn",
-    "The Yarl's Warhorn is used to raise the alarm or in today's Viking village is used mostly to call everyone together. The Yarl's war horn is made from the horn of Branston, his great bull and can be heard for miles when he blows it.  The villagers also use drinking horns as cups, drinking ale, cider and mead. Did you know, real Vikings did not have horns on their helmets!  That was made up in the 1800s by artists and costume designers."
-  );
+  // setupMarker(
+  //   'patternHornMarker',
+  //   "The Yarl's Warhorn",
+  //   "The Yarl's Warhorn is used to raise the alarm or in today's Viking village is used mostly to call everyone together. The Yarl's war horn is made from the horn of Branston, his great bull and can be heard for miles when he blows it.  The villagers also use drinking horns as cups, drinking ale, cider and mead. Did you know, real Vikings did not have horns on their helmets!  That was made up in the 1800s by artists and costume designers."
+  // );
 
-  setupMarker(
-    'patternAxeMarker',
-    "The Kolga",
-    "The Kolga, Havelok's battle axe.  Havelok gets in trouble using it to carve wood which can make axe blades blunt but not the Kolga. The original Kolga was made by Uffbert the Blacksmith. The King, Havelok's dad, commanded Uffbert to make a special axe when Havelok began his warrior training.  Kolga means cool one. The blade shows the dragon longship carrying the special ore that made the Kolga back from a raid. A giant wave hits the longship and the Borson's brother, Amond is swept overboard."
-  );
+  // setupMarker(
+  //   'patternAxeMarker',
+  //   "The Kolga",
+  //   "The Kolga, Havelok's battle axe.  Havelok gets in trouble using it to carve wood which can make axe blades blunt but not the Kolga. The original Kolga was made by Uffbert the Blacksmith. The King, Havelok's dad, commanded Uffbert to make a special axe when Havelok began his warrior training.  Kolga means cool one. The blade shows the dragon longship carrying the special ore that made the Kolga back from a raid. A giant wave hits the longship and the Borson's brother, Amond is swept overboard."
+  // );
 
-  setupMarker(
-    'patternBowlMarker',
-    "Havelok's Bowl",
-    ""
-  );
+  // setupMarker(
+  //   'patternBowlMarker',
+  //   "Havelok's Bowl",
+  //   ""
+  // );
 
-  setupMarker(
-    'patternSpoonMarker',
-    "Havelok's spoon",
-    "When he was little, Havelok spent a lot of time with Mavi the cook and learned to make lots of delicious recipes and some food disasters too! Havelok still enjoys mixing new ingredients and inventing tasty flavours to go with meat and fish or to add to dough. Cinammon from the traders is his favourite."
-  );
+  // setupMarker(
+  //   'patternSpoonMarker',
+  //   "Havelok's spoon",
+  //   "When he was little, Havelok spent a lot of time with Mavi the cook and learned to make lots of delicious recipes and some food disasters too! Havelok still enjoys mixing new ingredients and inventing tasty flavours to go with meat and fish or to add to dough. Cinammon from the traders is his favourite."
+  // );
 </script>
 
 </body>
