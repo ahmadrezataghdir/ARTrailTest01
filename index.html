@@ -203,21 +203,21 @@
         if (entity && entity.components.sound) {
           // Only play if sound hasn't been played before
           if (!soundPlayed[markerId]) {
-            // For character01M, show token first
+            // For character01M, show token and play sound immediately
             if (markerId === 'character01M') {
               const tokenOverlay = document.getElementById('tokenOverlay');
               tokenOverlay.style.display = 'block';
               
-              // Hide token and play sound after 5 seconds
+              // Play sound immediately
+              if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
+                currentlyPlayingEntity.components.sound.stopSound();
+              }
+              entity.components.sound.playSound();
+              currentlyPlayingEntity = entity;
+              
+              // Just hide token after 5 seconds
               setTimeout(() => {
                 tokenOverlay.style.display = 'none';
-                // Stop current sound if any
-                if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
-                  currentlyPlayingEntity.components.sound.stopSound();
-                }
-                // Play sound and mark as played
-                entity.components.sound.playSound();
-                currentlyPlayingEntity = entity;
                 soundPlayed[markerId] = true;
                 lastDetectedMarker = markerId;
               }, 5000);
