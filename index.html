@@ -126,31 +126,30 @@
         if (!tokenShown) {
           const tokenOverlay = document.getElementById('tokenOverlay');
           tokenOverlay.style.display = 'block';
-          tokenShown = true; // Mark as shown
+          tokenShown = true;
           
-          // Hide token after 5 seconds
           setTimeout(() => {
             tokenOverlay.style.display = 'none';
           }, 5000);
         }
 
-        // Sound playback code - only play if not played before
-        if (!soundPlayed) {
-          const soundEntity = marker.querySelector('#character01Sound');
-          if (soundEntity && soundEntity.components.sound) {
-            console.log('Playing sound for the first time');
-            soundEntity.components.sound.playSound();
-            currentlyPlayingEntity = soundEntity;
-            soundPlayed = true; // Mark sound as played
-          }
-          
-          // Show plane after 5 seconds
-          const plane = soundEntity.querySelector('#character01Plane');
-          if (plane) {
-            setTimeout(() => {
-              plane.setAttribute('visible', true);
-            }, 5000);
-          }
+        const soundEntity = marker.querySelector('#character01Sound');
+        
+        // Play sound only if not played before
+        if (!soundPlayed && soundEntity && soundEntity.components.sound) {
+          console.log('Playing sound for the first time');
+          soundEntity.components.sound.playSound();
+          currentlyPlayingEntity = soundEntity;
+          soundPlayed = true;
+        }
+        
+        // Show plane after delay - this happens every time
+        const plane = marker.querySelector('#character01Plane');
+        if (plane) {
+          plane.setAttribute('visible', false); // ensure it starts hidden
+          setTimeout(() => {
+            plane.setAttribute('visible', true);
+          }, 5000);
         }
       }
     });
