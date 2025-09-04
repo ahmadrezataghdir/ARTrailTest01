@@ -69,63 +69,24 @@
       url="./Assets/Markers/character01M.patt">
       
       <a-entity>
+        sound="src: ./Assets/Voices/SoundToken01VoiceKid01.mp3; 
+         autoplay: false; 
+         volume: 4; 
+         distanceModel: linear; 
+         rolloffFactor: 0;
+         preload: true">
         <a-plane 
           src="./Assets/CharactersAnimations/character01.png" 
           height="5" 
           width="5"
           position="0 1.5 3"
           rotation="-90 0 0"
-          material="transparent: true; alphaTest: 0.5"
-          sound="src: url(./Assets/Voices/SoundToken01VoiceKid01.mp3); 
-                 autoplay: false; 
-                 volume: 4; 
-                 distanceModel: linear; 
-                 rolloffFactor: 0;
-                 preload: true">
+          material="transparent: true; alphaTest: 0.5">
         </a-plane>
       </a-entity>
 
     </a-marker>
 
-    <!-- <a-marker id="patternHornMarker" smooth="true" type="pattern"
-      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/horn-marker.patt?v=1745922699965">
-      <a-entity gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsHornGLB.glb?v=1746953526195"
-        scale="4 4 4" position="0 1 0"
-        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundHorn.mp3?v=1746961833345); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
-      </a-entity>
-    </a-marker>
-
-    <a-marker id="patternAxeMarker" smooth="true" type="pattern"
-      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-Axe%20Marker%20F02.patt?v=1746802498653">
-      <a-entity
-        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectAxe02.glb?v=1746924357059"
-        scale="3.5 3.5 3.5" position="0 1 0.2"
-        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundAxe.mp3?v=1746961806895); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
-      </a-entity>
-    </a-marker>
-
-    <a-marker id="patternBowlMarker" smooth="true" type="pattern"
-      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-Bowl%20Marker%20F02.patt?v=1747139127462">
-      <a-entity
-        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectBowl02.glb?v=1746955382427"
-        scale="4 4 4" position="0 1 0.2"
-        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundBowl.mp3?v=1746961819838); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
-      </a-entity>
-    </a-marker>
-
-    <a-marker id="patternSpoonMarker" smooth="true" type="pattern"
-      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-Spoon%20Marker%20F02.patt?v=1747139073282">
-      <a-entity
-        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsSpoon01.glb?v=1746876397296"
-        scale="5 5 5" position="0 1 0.2"
-        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundSpoon.mp3?v=1746961813744); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
-      </a-entity>
-    </a-marker> -->
-    
 
     <a-entity camera> </a-entity>
   </a-scene>
@@ -140,61 +101,9 @@
   let currentlyPlayingEntity = null;
   let allMarkersDetected = false;
   let overlayTimer = null;
-  let lastDetectedMarker = null; // Track the last marker detected
-  const congratsSound = new Audio('https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOSoundEffects02.mp3?v=1747015536051');
-  
-  // Track which sounds have been played
-  const soundPlayed = {
-    'helmet-marker': false,
-    'patternHornMarker': false,
-    'patternAxeMarker': false,
-    'patternBowlMarker': false,
-    'patternSpoonMarker': false
-  };
-  
-  function checkAllMarkersDetected() {
-    const allDetected = Object.values(soundPlayed).every(played => played === true);
-    
-    if (allDetected && !allMarkersDetected) {
-      allMarkersDetected = true;
-
-      // Set delay based on last detected marker
-      let delay = 4000; // default 4s fallback
-      switch (lastDetectedMarker) {
-        case 'helmet-marker':
-          delay = 32000; // 32 seconds
-          break;
-        case 'patternHornMarker':
-          delay = 40000; // 40 seconds
-          break;
-        case 'patternAxeMarker':
-          delay = 44000; // 44 seconds
-          break;
-        case 'patternBowlMarker':
-          delay = 6000;  // 6 seconds
-          break;
-        case 'patternSpoonMarker':
-          delay = 28000; // 28 seconds
-          break;
-      }
-      console.log(`All markers detected, last marker: ${lastDetectedMarker}, waiting ${delay/1000}s before showing overlay.`);
-      
-      setTimeout(() => {
-        const overlay = document.getElementById('congratsOverlay');
-        overlay.style.display = 'block';
-        congratsSound.play();
-        
-        // Hide overlay after 15 seconds
-        setTimeout(() => {
-          overlay.style.display = 'none';
-        }, 0);
-      }, delay);
-    }
-  }
+  let lastDetectedMarker = null;
   
   function setupMarker(markerId, titleText, descriptionText) {
-    console.log("setupMarker called with markerId:", markerId);
-    
     const marker = document.querySelector(`#${markerId}`);
     marker.addEventListener('markerFound', () => {
       if (!titleElement && !descriptionElement) {
@@ -208,44 +117,12 @@
         descriptionElement.textContent = descriptionText;
         document.body.appendChild(descriptionElement);
 
-        // Get the entity inside the marker
         const entity = marker.querySelector('a-entity');
         if (entity && entity.components.sound) {
-          // Only play if sound hasn't been played before
-          if (!soundPlayed[markerId]) {
-            // For character01M, show token first
-            if (markerId === 'character01M') {
-              const tokenOverlay = document.getElementById('tokenOverlay');
-              tokenOverlay.style.display = 'block';
-              
-              // Play sound immediately
-              if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
-                currentlyPlayingEntity.components.sound.stopSound();
-              }
-              entity.components.sound.playSound();
-              currentlyPlayingEntity = entity;
-              soundPlayed[markerId] = true;
-              lastDetectedMarker = markerId;
-              
-              // Just hide token after 5 seconds
-              setTimeout(() => {
-                tokenOverlay.style.display = 'none';
-              }, 5000);
-            } else {
-              // For other markers, play sound immediately
-              if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
-                currentlyPlayingEntity.components.sound.stopSound();
-              }
-              entity.components.sound.playSound();
-              currentlyPlayingEntity = entity;
-              soundPlayed[markerId] = true;
-              lastDetectedMarker = markerId;
-            }
-          }
+          entity.components.sound.playSound();
+          currentlyPlayingEntity = entity;
         }
       }
-      
-      checkAllMarkersDetected();
     });
 
     marker.addEventListener('markerLost', () => {
@@ -261,33 +138,9 @@
   // Setup markers with their respective titles and descriptions
   setupMarker(
     'character01M',
-    "character01",
-    "This is the character01"
+    "Character 01", // Title - replace with your desired title
+    "This is Character 01" // Description - replace with your desired description
   );
-
-  // setupMarker(
-  //   'patternHornMarker',
-  //   "The Yarl's Warhorn",
-  //   "The Yarl's Warhorn is used to raise the alarm or in today's Viking village is used mostly to call everyone together. The Yarl's war horn is made from the horn of Branston, his great bull and can be heard for miles when he blows it.  The villagers also use drinking horns as cups, drinking ale, cider and mead. Did you know, real Vikings did not have horns on their helmets!  That was made up in the 1800s by artists and costume designers."
-  // );
-
-  // setupMarker(
-  //   'patternAxeMarker',
-  //   "The Kolga",
-  //   "The Kolga, Havelok's battle axe.  Havelok gets in trouble using it to carve wood which can make axe blades blunt but not the Kolga. The original Kolga was made by Uffbert the Blacksmith. The King, Havelok's dad, commanded Uffbert to make a special axe when Havelok began his warrior training.  Kolga means cool one. The blade shows the dragon longship carrying the special ore that made the Kolga back from a raid. A giant wave hits the longship and the Borson's brother, Amond is swept overboard."
-  // );
-
-  // setupMarker(
-  //   'patternBowlMarker',
-  //   "Havelok's Bowl",
-  //   ""
-  // );
-
-  // setupMarker(
-  //   'patternSpoonMarker',
-  //   "Havelok's spoon",
-  //   "When he was little, Havelok spent a lot of time with Mavi the cook and learned to make lots of delicious recipes and some food disasters too! Havelok still enjoys mixing new ingredients and inventing tasty flavours to go with meat and fish or to add to dough. Cinammon from the traders is his favourite."
-  // );
 </script>
 
 </body>
