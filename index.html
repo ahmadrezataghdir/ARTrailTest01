@@ -65,7 +65,13 @@
    renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
-    <a-marker smooth="true" id="character01M" type="pattern"
+    <a-marker 
+      smooth="true"
+      smoothCount="10"
+      smoothTolerance="0.01"
+      smoothThreshold="5"
+      id="character01M" 
+      type="pattern"
       url="./Assets/Markers/character01M.patt">
       
       <a-entity
@@ -79,11 +85,12 @@
         <a-plane 
           id="character01Plane"
           src="./Assets/CharactersAnimations/character01.png" 
-          height="5" 
-          width="5"
-          position="0 1.5 3"
+          height="7" 
+          width="7"
+          position="0 1.5 4"
           rotation="-90 0 0"
-          material="transparent: true; alphaTest: 0.5">
+          material="transparent: true; alphaTest: 0.5"
+          look-at="[camera]">
         </a-plane>
       </a-entity>
 
