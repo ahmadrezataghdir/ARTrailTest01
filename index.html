@@ -63,30 +63,15 @@
 <body style="margin: 0px; overflow: hidden">
   <a-scene embedded
   arjs="sourceType: webcam; 
-        sourceWidth: 1280; 
-        sourceHeight: 960; 
-        displayWidth: 1280; 
-        displayHeight: 960; 
-        debugUIEnabled: false; 
-        detectionMode: mono_and_matrix; 
-        matrixCodeType: 3x3; 
-        maxDetectionRate: 60; 
-        patternRatio: 0.75;
-        areaThreshold: 0.1;
-        thresholdMode: auto;"
-   renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
-    <!-- <a-marker preset="hiro" smooth="true"> -->
+        debugUIEnabled: true;">
 
     <a-marker 
-      smooth="true" 
-      smoothCount="10"
+      smooth="true"
+      smoothCount="5"
       smoothTolerance="0.01"
-      smoothThreshold="5"
-      raycaster="objects: .clickable"
-      emitevents="true"
-      cursor="fuse: false; rayOrigin: mouse;"
       id="character01M" 
       type="pattern"
+      preset="custom"
       url="./Assets/Markers/character01M.patt">
       
       <a-entity
