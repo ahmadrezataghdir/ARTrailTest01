@@ -57,26 +57,13 @@
       z-index: 2000;
       display: none;
     }
-    video {
-      display: none;
-    }
   </style>
 </head>
 
 <body style="margin: 0px; overflow: hidden">
   <a-scene embedded arjs
    renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
-    <a-assets>
-      <video 
-        id="sweepVideo" 
-        src="./Assets/CharactersAnimations/SweepVideo.mp4"
-        preload="auto"
-        crossorigin="anonymous"
-        playsinline 
-        webkit-playsinline
-        loop>
-      </video>
-    </a-assets>
+    <!-- <a-marker preset="hiro" smooth="true"> -->
 
     <a-marker 
       smooth="true"
@@ -88,16 +75,16 @@
       url="./Assets/Markers/character01M.patt">
       
       <a-entity
-        id="character01Sound">
-        <a-video
-          src="#sweepVideo"
-          width="4"
-          height="4"
-          position="0 0 0"
-          rotation="-90 0 0"
-          material="transparent: true; alphaTest: 0.5"
-          play-on-marker>
-        </a-video>
+        id="character01Sound"
+        sound="src: ./Assets/Voices/SoundToken01VoiceKid01.mp3; 
+               autoplay: false; 
+               volume: 4; 
+               distanceModel: linear; 
+               rolloffFactor: 0;
+               preload: true">
+        <a-plane 
+          
+        </a-plane>
       </a-entity>
 
     </a-marker>
@@ -112,39 +99,30 @@
   
   <a-assets>
     <video 
-      id="sweepVideo" 
-      src="./Assets/CharactersAnimations/SweepVideo.mp4"
+      id="sweepMainVideo" 
+      src="./Assets/CharactersAnimations/SweepMain.webm"
       preload="auto"
-      crossorigin="anonymous"
       playsinline 
-      webkit-playsinline>
+      webkit-playsinline
+      loop>
     </video>
   </a-assets>
 
-<script>
-  // Add this before your existing script
-  AFRAME.registerComponent('play-on-marker', {
-    init: function () {
-      const video = document.querySelector('#sweepVideo');
-      const marker = this.el.parentNode.parentNode;
-      
-      // Make sure video is loaded
-      video.load();
-      
-      marker.addEventListener('markerFound', () => {
-        console.log('Marker found, playing video');
-        video.play().catch(function(error) {
-          console.log("Video play failed:", error);
-        });
-      });
-      
-      marker.addEventListener('markerLost', () => {
-        console.log('Marker lost, pausing video');
-        video.pause();
-      });
-    }
-  });
+  <a-plane 
+    id="videoPlane"
+    width="4"
+    height="4"
+    position="0 0 0"
+    rotation="-90 0 0"
+    material="shader: flat; 
+             src: #sweepMainVideo; 
+             transparent: true; 
+             alphaTest: 0.5;
+             color: #ffffff"
+    play-on-marker>
+  </a-plane>
 
+<script>
   let titleElement = null;
   let descriptionElement = null;
   let currentlyPlayingEntity = null;
@@ -178,6 +156,16 @@
             tokenOverlay.style.display = 'none';
           }, 5000);
         }
+
+        const soundEntity = marker.querySelector('#character01Sound');
+        
+        // Play sound only if not played before
+        if (!soundPlayed && soundEntity && soundEntity.components.sound) {
+          console.log('Playing sound for the first time');
+          soundEntity.components.sound.playSound();
+          currentlyPlayingEntity = soundEntity;
+          soundPlayed = true;
+        }
       }
     });
 
@@ -197,6 +185,28 @@
     "Character 01", // Title - replace with your desired title
     "This is Character 01" // Description - replace with your desired description
   );
+
+  AFRAME.registerComponent('play-on-marker', {
+    init: function () {
+      const video = document.querySelector('#sweepMainVideo');
+      const marker = this.el.parentNode.parentNode;
+      
+      // Make sure video is loaded
+      video.load();
+      
+      marker.addEventListener('markerFound', () => {
+        console.log('Marker found, playing video');
+        video.play().catch(function(error) {
+          console.log("Video play failed:", error);
+        });
+      });
+      
+      marker.addEventListener('markerLost', () => {
+        console.log('Marker lost, pausing video');
+        video.pause();
+      });
+    }
+  });
 </script>
 
 </body>
