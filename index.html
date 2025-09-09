@@ -82,9 +82,20 @@
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
+        
         <a-plane 
-          
+          id="videoPlane"
+          width="4"
+          height="4"
+          position="0 0 0"
+          rotation="-90 0 0"
+          material="shader: flat; 
+                   src: #sweepMainVideo; 
+                   transparent: true; 
+                   alphaTest: 0.5;
+                   color: #ffffff">
         </a-plane>
+
       </a-entity>
 
     </a-marker>
@@ -97,30 +108,16 @@
        src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
   <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
   
-  <a-assets>
-    <video 
-      id="sweepMainVideo" 
-      src="./Assets/CharactersAnimations/SweepMain.webm"
-      preload="auto"
-      playsinline 
-      webkit-playsinline
-      loop>
-    </video>
-  </a-assets>
-
-  <a-plane 
-    id="videoPlane"
-    width="4"
-    height="4"
-    position="0 0 0"
-    rotation="-90 0 0"
-    material="shader: flat; 
-             src: #sweepMainVideo; 
-             transparent: true; 
-             alphaTest: 0.5;
-             color: #ffffff"
-    play-on-marker>
-  </a-plane>
+<a-assets>
+  <video 
+    id="sweepMainVideo" 
+    src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm"
+    preload="auto"
+    playsinline 
+    webkit-playsinline
+    loop>
+  </video>
+</a-assets>
 
 <script>
   let titleElement = null;
@@ -186,7 +183,7 @@
     "This is Character 01" // Description - replace with your desired description
   );
 
-  AFRAME.registerComponent('play-on-marker', {
+  AFRAME.registerComponent('video-handler', {
     init: function () {
       const video = document.querySelector('#sweepMainVideo');
       const marker = this.el.parentNode.parentNode;
