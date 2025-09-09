@@ -68,7 +68,7 @@
 
   <img id="congratsOverlay" class="overlay-image"
     src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
-  <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
+    <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
 
   <a-scene embedded arjs
     renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
@@ -84,7 +84,7 @@
     <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="character01M" type="pattern"
       url="./Assets/Markers/character01M.patt">
 
-      <a-entity id="character01Sound" sound="src: ./Assets/Voices/SoundToken01VoiceKid01.mp3; 
+      <a-entity id="SoundToken01" sound="src: ./Assets/Voices/SoundToken01.mp3; 
                autoplay: false; 
                volume: 4; 
                distanceModel: linear; 
@@ -93,7 +93,7 @@
 
 
 
-        <a-plane id="videoPlane" width="4" height="4" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+        <a-plane id="videoPlane" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
                    src: #sweepMainVideo; 
                    transparent: true;">
         </a-plane>
@@ -155,25 +155,27 @@
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
 
-          // Handle token overlay
-          if (!tokenShown) {
-            const tokenOverlay = document.getElementById('tokenOverlay');
-            tokenOverlay.style.display = 'block';
-            tokenShown = true;
-
+          // Handle both token overlay and sound with 26 second delay
+          if (!tokenShown && !soundPlayed) {
             setTimeout(() => {
-              tokenOverlay.style.display = 'none';
-            }, 5000);
-          }
+              // Show token
+              const tokenOverlay = document.getElementById('tokenOverlay');
+              tokenOverlay.style.display = 'block';
+              tokenShown = true;
 
-          const soundEntity = marker.querySelector('#character01Sound');
+              // Play sound
+              const soundEntity = marker.querySelector('#SoundToken01');
+              if (soundEntity && soundEntity.components.sound) {
+                console.log('Playing sound after 26 seconds');
+                soundEntity.components.sound.playSound();
+                soundPlayed = true;
+              }
 
-          // Play sound only if not played before
-          if (!soundPlayed && soundEntity && soundEntity.components.sound) {
-            console.log('Playing sound for the first time');
-            soundEntity.components.sound.playSound();
-            currentlyPlayingEntity = soundEntity;
-            soundPlayed = true;
+              // Hide token after 5 seconds
+              setTimeout(() => {
+                tokenOverlay.style.display = 'none';
+              }, 5000);
+            }, 26000); // 26 seconds delay
           }
         }
       });
