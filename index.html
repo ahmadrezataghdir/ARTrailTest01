@@ -70,7 +70,7 @@
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
     <a-assets>
-      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.mp4" preload="auto" autoplay loop="true" muted playsinline>
+      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto" autoplay loop="true" muted playsinline>
 
       </video>
     </a-assets>
@@ -90,7 +90,7 @@
         <a-plane id="videoPlane" width="4" height="4" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
                    src: #sweepMainVideo; 
                    transparent: true;"
-                   onclick="document.querySelector('#sweepMainVideo').play()">
+                   onclick="console.log('Plane clicked!'); document.querySelector('#my-video').play()">
         </a-plane>
 
       </a-entity>
