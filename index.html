@@ -1,6 +1,7 @@
 <html>
 
 <head>
+  <meta name="apple-mobile-web-app-capable" content="yes">
   <!-- A-Frame itself -->
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
@@ -22,6 +23,7 @@
       word-wrap: break-word;
 
     }
+
     p.Title {
       position: fixed;
       top: 10px;
@@ -37,6 +39,7 @@
       width: 80%;
       text-align: center;
     }
+
     .overlay-image {
       position: fixed;
       top: 50%;
@@ -47,6 +50,7 @@
       z-index: 2000;
       display: none;
     }
+
     .token-image {
       position: fixed;
       top: 50%;
@@ -62,36 +66,33 @@
 
 <body style="margin: 0px; overflow: hidden">
   <a-scene embedded arjs
-   renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
+    renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
-    <a-marker 
-      smooth="true"
-      smoothCount="10"
-      smoothTolerance="0.01"
-      smoothThreshold="5"
-      id="character01M" 
-      type="pattern"
+    <a-assets>
+      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto" autoplay loop="true" muted playsinline>
+
+      </video>
+    </a-assets>
+
+    <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="character01M" type="pattern"
       url="./Assets/Markers/character01M.patt">
-      
-      <a-entity
-        id="character01Sound"
-        sound="src: ./Assets/Voices/SoundToken01VoiceKid01.mp3; 
+
+      <a-entity id="character01Sound" sound="src: ./Assets/Voices/SoundToken01VoiceKid01.mp3; 
                autoplay: false; 
                volume: 4; 
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
-        <a-plane 
-          id="character01Plane"
-          src="./Assets/CharactersAnimations/character01.png" 
-          height="7" 
-          width="7"
-          position="0 1.5 4"
-          rotation="-90 0 0"
-          material="transparent: true; alphaTest: 0.5"
-          look-at="[camera]">
+
+
+
+        <a-plane id="videoPlane" width="4" height="4" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+                   src: #sweepMainVideo; 
+                   transparent: true;"
+                   onclick="console.log('Plane clicked!'); document.querySelector('#my-video').play()">
         </a-plane>
+
       </a-entity>
 
     </a-marker>
@@ -100,74 +101,78 @@
     <a-entity camera> </a-entity>
   </a-scene>
 
-  <img id="congratsOverlay" class="overlay-image" 
-       src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
+  <img id="congratsOverlay" class="overlay-image"
+    src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
   <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
-  
-<script>
-  let titleElement = null;
-  let descriptionElement = null;
-  let currentlyPlayingEntity = null;
-  let allMarkersDetected = false;
-  let overlayTimer = null;
-  let lastDetectedMarker = null;
-  let tokenShown = false; // Track if token has been shown
-  let soundPlayed = false; // Track if sound has been played
 
-  function setupMarker(markerId, titleText, descriptionText) {
-    const marker = document.querySelector(`#${markerId}`);
-    marker.addEventListener('markerFound', () => {
-      if (!titleElement && !descriptionElement) {
-        titleElement = document.createElement('p');
-        titleElement.className = "Title";
-        titleElement.textContent = titleText;
-        document.body.appendChild(titleElement);
 
-        descriptionElement = document.createElement('p');
-        descriptionElement.className = "Description";
-        descriptionElement.textContent = descriptionText;
-        document.body.appendChild(descriptionElement);
 
-        // Handle token overlay
-        if (!tokenShown) {
-          const tokenOverlay = document.getElementById('tokenOverlay');
-          tokenOverlay.style.display = 'block';
-          tokenShown = true;
-          
-          setTimeout(() => {
-            tokenOverlay.style.display = 'none';
-          }, 5000);
+  <script>
+
+    let titleElement = null;
+    let descriptionElement = null;
+    let currentlyPlayingEntity = null;
+    let allMarkersDetected = false;
+    let overlayTimer = null;
+    let lastDetectedMarker = null;
+    let tokenShown = false; // Track if token has been shown
+    let soundPlayed = false; // Track if sound has been played
+
+    function setupMarker(markerId, titleText, descriptionText) {
+      const marker = document.querySelector(`#${markerId}`);
+      marker.addEventListener('markerFound', () => {
+        if (!titleElement && !descriptionElement) {
+          titleElement = document.createElement('p');
+          titleElement.className = "Title";
+          titleElement.textContent = titleText;
+          document.body.appendChild(titleElement);
+
+          descriptionElement = document.createElement('p');
+          descriptionElement.className = "Description";
+          descriptionElement.textContent = descriptionText;
+          document.body.appendChild(descriptionElement);
+
+          // Handle token overlay
+          if (!tokenShown) {
+            const tokenOverlay = document.getElementById('tokenOverlay');
+            tokenOverlay.style.display = 'block';
+            tokenShown = true;
+
+            setTimeout(() => {
+              tokenOverlay.style.display = 'none';
+            }, 5000);
+          }
+
+          const soundEntity = marker.querySelector('#character01Sound');
+
+          // Play sound only if not played before
+          if (!soundPlayed && soundEntity && soundEntity.components.sound) {
+            console.log('Playing sound for the first time');
+            soundEntity.components.sound.playSound();
+            currentlyPlayingEntity = soundEntity;
+            soundPlayed = true;
+          }
         }
+      });
 
-        const soundEntity = marker.querySelector('#character01Sound');
-        
-        // Play sound only if not played before
-        if (!soundPlayed && soundEntity && soundEntity.components.sound) {
-          console.log('Playing sound for the first time');
-          soundEntity.components.sound.playSound();
-          currentlyPlayingEntity = soundEntity;
-          soundPlayed = true;
+      marker.addEventListener('markerLost', () => {
+        if (titleElement && descriptionElement) {
+          titleElement.remove();
+          descriptionElement.remove();
+          titleElement = null;
+          descriptionElement = null;
         }
-      }
-    });
+      });
+    }
 
-    marker.addEventListener('markerLost', () => {
-      if (titleElement && descriptionElement) {
-        titleElement.remove();
-        descriptionElement.remove();
-        titleElement = null;
-        descriptionElement = null;
-      }
-    });
-  }
+    // Setup markers with their respective titles and descriptions
+    setupMarker(
+      'character01M',
+      "Character 01", // Title - replace with your desired title
+      "This is Character 01" // Description - replace with your desired description
+    );
 
-  // Setup markers with their respective titles and descriptions
-  setupMarker(
-    'character01M',
-    "Character 01", // Title - replace with your desired title
-    "This is Character 01" // Description - replace with your desired description
-  );
-</script>
+  </script>
 
 </body>
 
