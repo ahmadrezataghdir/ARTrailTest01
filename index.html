@@ -118,6 +118,7 @@
     let lastDetectedMarker = null;
     let tokenShown = false; // Track if token has been shown
     let soundPlayed = false; // Track if sound has been played
+    let videoStarted = false; // Track if video has been started
 
     function setupMarker(markerId, titleText, descriptionText, videoID) {
       const marker = document.querySelector(`#${markerId}`);
@@ -133,7 +134,12 @@
           descriptionElement.className = "Description";
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
-          video.play();
+
+          // Only play video if it hasn't been started before
+          if (!videoStarted) {
+            video.play();
+            videoStarted = true;
+          }
         }
       });
 
@@ -158,8 +164,9 @@
           descriptionElement.remove();
           titleElement = null;
           descriptionElement = null;
-          video.pause();
-          video.currentTime = 0; // Reset video to start
+          // Remove these lines to prevent video from stopping
+          // video.pause();
+          // video.currentTime = 0;
         }
       });
     }
