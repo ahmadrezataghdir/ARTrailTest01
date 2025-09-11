@@ -68,7 +68,7 @@
 
   <img id="congratsOverlay" class="overlay-image"
     src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
-    <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
+  <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
 
   <a-scene embedded arjs
     renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
@@ -110,28 +110,6 @@
 
   <script>
 
-    function playVideo(markerID, videoID) {
-      const video = document.querySelector(`#${videoID}`);
-      const marker = document.querySelector(`#${markerID}`);
-
-      marker.addEventListener('markerFound', () => {
-        video.play();
-        console.log('Marker found, video playing!');
-      });
-
-      marker.addEventListener('markerLost', () => {
-        video.pause();
-        video.currentTime = 0; // Reset video to start
-        console.log('Marker lost, video paused!');
-      });
-    }
-    playVideo('character01M', 'sweepMainVideo');
-    // plane.addEventListener('click', () => {
-    //   console.log('Plane clicked!');
-    //   video.play();
-
-    // });
-
     let titleElement = null;
     let descriptionElement = null;
     let currentlyPlayingEntity = null;
@@ -141,8 +119,9 @@
     let tokenShown = false; // Track if token has been shown
     let soundPlayed = false; // Track if sound has been played
 
-    function setupMarker(markerId, titleText, descriptionText) {
+    function setupMarker(markerId, titleText, descriptionText, videoID) {
       const marker = document.querySelector(`#${markerId}`);
+      const video = document.querySelector(`#${videoID}`);
       marker.addEventListener('markerFound', () => {
         if (!titleElement && !descriptionElement) {
           titleElement = document.createElement('p');
@@ -154,38 +133,33 @@
           descriptionElement.className = "Description";
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
-
-          // Handle both token overlay and sound with 26 second delay
-          if (!tokenShown && !soundPlayed) {
-            setTimeout(() => {
-              // Show token
-              const tokenOverlay = document.getElementById('tokenOverlay');
-              tokenOverlay.style.display = 'block';
-              tokenShown = true;
-
-              // Play sound
-              const soundEntity = marker.querySelector('#SoundToken01');
-              if (soundEntity && soundEntity.components.sound) {
-                console.log('Playing sound after 26 seconds');
-                soundEntity.components.sound.playSound();
-                soundPlayed = true;
-              }
-
-              // Hide token after 5 seconds
-              setTimeout(() => {
-                tokenOverlay.style.display = 'none';
-              }, 5000);
-            }, 28000); // 26 seconds delay
-          }
+          video.play();
         }
       });
 
+      video.addEventListener('ended', () => {
+        const tokenOverlay = document.getElementById('tokenOverlay');
+        tokenOverlay.style.display = 'block';
+        tokenShown = true;
+        const soundEntity = marker.querySelector('#SoundToken01');
+        if (soundEntity && soundEntity.components.sound) {
+          console.log('Playing sound after 26 seconds');
+          soundEntity.components.sound.playSound();
+          soundPlayed = true;
+        }
+        setTimeout(() => {
+          tokenOverlay.style.display = 'none';
+        }, 5000);
+
+      });
       marker.addEventListener('markerLost', () => {
         if (titleElement && descriptionElement) {
           titleElement.remove();
           descriptionElement.remove();
           titleElement = null;
           descriptionElement = null;
+          video.pause();
+          video.currentTime = 0; // Reset video to start
         }
       });
     }
@@ -194,7 +168,8 @@
     setupMarker(
       'character01M',
       "Character 01", // Title - replace with your desired title
-      "This is Character 01" // Description - replace with your desired description
+      "This is Character 01", // Description - replace with your desired description
+      'sweepMainVideo'
     );
 
   </script>
