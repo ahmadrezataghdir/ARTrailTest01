@@ -77,8 +77,7 @@
 
 <body style="margin: 0px; overflow: hidden">
 
-  <img id="congratsOverlay" class="overlay-image"
-    src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
+  <img id="congratsOverlay" class="overlay-image" src="./Assets/Token/Token02.png">
   <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
   <img id="riverheadOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/Riverhead.png">
   <img id="bullringOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/BullRingUrchins.png">
@@ -117,14 +116,14 @@
 
       <a-entity id="SoundToken01" sound="src: ./Assets/Voices/SoundToken01.mp3; 
                autoplay: false; 
-               volume: 4; 
+               volume: 3; 
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
 
 
 
-        <a-plane id="videoPlane" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+        <a-plane id="videoPlane" width="3" height="3" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
                    src: #sweepMainVideo; 
                    transparent: true;">
         </a-plane>
@@ -141,7 +140,7 @@
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
-        <a-plane id="videoPlane2" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+        <a-plane id="videoPlane2" width="3" height="3" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
                  src: #suffragetteMainVideo; 
                  transparent: true;">
         </a-plane>
@@ -156,7 +155,7 @@
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
-        <a-plane id="videoPlane3" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+        <a-plane id="videoPlane3" width="3" height="3" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
                  src: #longshipArrivalMainVideo; 
                  transparent: true;">
         </a-plane>
@@ -171,7 +170,7 @@
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
-        <a-plane id="videoPlane4" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+        <a-plane id="videoPlane4" width="3" height="3" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
                  src: #vikingEndMainVideo; 
                  transparent: true;">
         </a-plane>
@@ -206,8 +205,8 @@
           type="pattern"
           url="./Assets/Markers/03 LongshipText Marker/LongshipArrivalTextM.patt">
       <a-plane id="longshipTextPlane" 
-               width="10" 
-               height="10" 
+               width="3" 
+               height="3" 
                position="0 0 0" 
                rotation="-90 0 0" 
                material="shader: flat; 
@@ -243,6 +242,49 @@
         'longshipTextVideo': { played: false, completed: false }
     };
 
+    const tokenStates = {
+        'sweepMainVideo': { shown: false },
+        'suffragetteMainVideo': { shown: false },
+        'longshipArrivalMainVideo': { shown: false }
+    };
+
+    // Add this variable at the top of your script section
+    let markersDisabled = false;
+
+    // Add this function to disable all markers
+    function disableAllMarkers() {
+        const markers = document.querySelectorAll('a-marker');
+        markers.forEach(marker => {
+            marker.setAttribute('visible', 'false');
+            marker.removeAttribute('emitevents');
+        });
+        markersDisabled = true;
+    }
+
+    function showTokenAndPlaySound(markerId) {
+        const videoId = markerId === 'character01M' ? 'sweepMainVideo' : 
+                        markerId === 'SuffragetteM' ? 'suffragetteMainVideo' : 
+                        'longshipArrivalMainVideo';
+
+        if (!tokenStates[videoId].shown) {
+            const tokenOverlay = document.getElementById('tokenOverlay');
+            tokenOverlay.style.display = 'block';
+            
+            // Play SoundToken01
+            const soundEntity = document.querySelector('#SoundToken01');
+            if (soundEntity && soundEntity.components.sound) {
+                soundEntity.components.sound.playSound();
+            }
+
+            // Hide token after 5 seconds
+            setTimeout(() => {
+                tokenOverlay.style.display = 'none';
+            }, 5000);
+
+            tokenStates[videoId].shown = true;
+        }
+    }
+
     function setupMarker(markerId, titleText, descriptionText, videoID) {
       const marker = document.querySelector(`#${markerId}`);
       const video = document.querySelector(`#${videoID}`);
@@ -251,26 +293,21 @@
       video.addEventListener('ended', () => {
         videoStates[videoID].completed = true;
         
-        // Show token overlay after video ends
-        if (!tokenShown) {
-            const tokenOverlay = document.getElementById('tokenOverlay');
-            tokenOverlay.style.display = 'block';
-            tokenShown = true;
-            
-            // Play associated sound
-            const soundEntity = marker.querySelector(`#SoundToken${markerId.replace(/[^0-9]/g, '')}`);
-            if (soundEntity && soundEntity.components.sound && !soundPlayed) {
-                soundEntity.components.sound.playSound();
-                soundPlayed = true;
-            }
-            
-            setTimeout(() => {
-                tokenOverlay.style.display = 'none';
-            }, 5000);
+        // Special handling for vikingEndMainVideo
+        if (videoID === 'vikingEndMainVideo') {
+            const overlay = document.getElementById('congratsOverlay');
+            overlay.style.display = 'block';
+            disableAllMarkers();
+        }
+        // Only show token for specific videos
+        if (['sweepMainVideo', 'suffragetteMainVideo', 'longshipArrivalMainVideo'].includes(videoID)) {
+            showTokenAndPlaySound(markerId);
         }
       });
 
       marker.addEventListener('markerFound', () => {
+        if (markersDisabled) return; // Skip if markers are disabled
+
         if (!titleElement && !descriptionElement) {
           titleElement = document.createElement('p');
           titleElement.className = "Title";
@@ -339,6 +376,7 @@
     // Replace the RiverheadM and BullRingM setupMarker calls with this custom setup
     const riverheadMarker = document.querySelector('#RiverheadM');
     riverheadMarker.addEventListener('markerFound', () => {
+        if (markersDisabled) return;
         const overlay = document.getElementById('riverheadOverlay');
         overlay.style.display = 'block';
     });
@@ -350,6 +388,7 @@
 
     const bullringMarker = document.querySelector('#BullRingM');
     bullringMarker.addEventListener('markerFound', () => {
+        if (markersDisabled) return;
         const overlay = document.getElementById('bullringOverlay');
         overlay.style.display = 'block';
     });
@@ -365,6 +404,7 @@
     const longshipTextVideo = document.querySelector('#longshipTextVideo');
 
     longshipTextMarker.addEventListener('markerFound', () => {
+        if (markersDisabled) return;
         if (!longshipTextVideoPlayed) {
             // Stop current playing video if any
             if (currentPlayingVideo) {
