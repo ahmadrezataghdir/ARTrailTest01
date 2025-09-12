@@ -61,6 +61,17 @@
       z-index: 2000;
       display: none;
     }
+
+    .photo-overlay {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 95%;
+      max-width: 800px;
+      z-index: 2000;
+      display: none;
+    }
   </style>
 </head>
 
@@ -69,6 +80,8 @@
   <img id="congratsOverlay" class="overlay-image"
     src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
   <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
+  <img id="riverheadOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/Riverhead.png">
+  <img id="bullringOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/BullRingUrchins.png">
 
   <a-scene embedded arjs
     renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
@@ -78,6 +91,24 @@
       <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto" autoplay
         loop="false" playsinline>
 
+      </video>
+      <video id="suffragetteMainVideo" src="./Assets/CharactersAnimations/02 Suffragette/SuffragetteMain.webm"
+        preload="auto" autoplay loop="false" playsinline>
+      </video>
+      
+      <video id="longshipArrivalMainVideo" src="./Assets/CharactersAnimations/04 LongshipArrival/LongshipArrivalMain.webm"
+        preload="auto" autoplay loop="false" playsinline>
+      </video>
+      
+      <video id="vikingEndMainVideo" src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="auto"
+        autoplay loop="false" playsinline>
+      </video>
+      <img id="riverheadPhoto" src="./Assets/LandscapePhoto/Riverhead.png">
+      <img id="bullringPhoto" src="./Assets/LandscapePhoto/BullRingUrchins.png">
+      <video id="longshipTextVideo" 
+           src="./Assets/CharactersAnimations/03 LongshipText/LongshipTextMain.webm" 
+           preload="auto" 
+           playsinline>
       </video>
     </a-assets>
 
@@ -102,6 +133,88 @@
 
     </a-marker>
 
+    <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="SuffragetteM" type="pattern"
+      url="./Assets/Markers/02 Suffragette Marker/SuffragetteM.patt">
+      <a-entity id="SoundToken02" sound="src: ./Assets/Voices/SoundToken02.mp3; 
+               autoplay: false; 
+               volume: 4; 
+               distanceModel: linear; 
+               rolloffFactor: 0;
+               preload: true">
+        <a-plane id="videoPlane2" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+                 src: #suffragetteMainVideo; 
+                 transparent: true;">
+        </a-plane>
+      </a-entity>
+    </a-marker>
+
+    <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="LongshipArrivalM" type="pattern"
+      url="./Assets/Markers/04 LongshipArrival Marker/LongshipArrivalM.patt">
+      <a-entity id="SoundToken03" sound="src: ./Assets/Voices/SoundToken03.mp3; 
+               autoplay: false; 
+               volume: 4; 
+               distanceModel: linear; 
+               rolloffFactor: 0;
+               preload: true">
+        <a-plane id="videoPlane3" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+                 src: #longshipArrivalMainVideo; 
+                 transparent: true;">
+        </a-plane>
+      </a-entity>
+    </a-marker>
+
+    <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="VikingEndM" type="pattern"
+      url="./Assets/Markers/05 VikingEnd Marker/VikingEndM.patt">
+      <a-entity id="SoundToken04" sound="src: ./Assets/Voices/SoundToken04.mp3; 
+               autoplay: false; 
+               volume: 4; 
+               distanceModel: linear; 
+               rolloffFactor: 0;
+               preload: true">
+        <a-plane id="videoPlane4" width="10" height="10" position="0 0 0" rotation="-90 0 0" material="shader: flat; 
+                 src: #vikingEndMainVideo; 
+                 transparent: true;">
+        </a-plane>
+      </a-entity>
+    </a-marker>
+
+    <a-marker smooth="true" 
+          smoothCount="10" 
+          smoothTolerance="0.01" 
+          smoothThreshold="5" 
+          id="RiverheadM" 
+          type="pattern"
+          url="./Assets/Markers/06 Riverhead Marker/RiverheadM.patt">
+      
+    </a-marker>
+
+    <a-marker smooth="true" 
+          smoothCount="10" 
+          smoothTolerance="0.01" 
+          smoothThreshold="5" 
+          id="BullRingM" 
+          type="pattern"
+          url="./Assets/Markers/07 BullRing Marker/BullRingM.patt">
+     
+    </a-marker>
+
+    <a-marker smooth="true" 
+          smoothCount="10" 
+          smoothTolerance="0.01" 
+          smoothThreshold="5" 
+          id="LongshipTextM" 
+          type="pattern"
+          url="./Assets/Markers/03 LongshipText Marker/LongshipArrivalTextM.patt">
+      <a-plane id="longshipTextPlane" 
+               width="10" 
+               height="10" 
+               position="0 0 0" 
+               rotation="-90 0 0" 
+               material="shader: flat; 
+                        src: #longshipTextVideo; 
+                        transparent: true;">
+      </a-plane>
+    </a-marker>
 
     <a-entity camera>
     </a-entity>
@@ -120,9 +233,43 @@
     let soundPlayed = false; // Track if sound has been played
     let videoStarted = false; // Track if video has been started
 
+    // Add these variables at the top of your script section
+    let currentPlayingVideo = null;
+    const videoStates = {
+        'sweepMainVideo': { played: false, completed: false },
+        'suffragetteMainVideo': { played: false, completed: false },
+        'longshipArrivalMainVideo': { played: false, completed: false },
+        'vikingEndMainVideo': { played: false, completed: false },
+        'longshipTextVideo': { played: false, completed: false }
+    };
+
     function setupMarker(markerId, titleText, descriptionText, videoID) {
       const marker = document.querySelector(`#${markerId}`);
       const video = document.querySelector(`#${videoID}`);
+
+      // Add ended event listener to track completion
+      video.addEventListener('ended', () => {
+        videoStates[videoID].completed = true;
+        
+        // Show token overlay after video ends
+        if (!tokenShown) {
+            const tokenOverlay = document.getElementById('tokenOverlay');
+            tokenOverlay.style.display = 'block';
+            tokenShown = true;
+            
+            // Play associated sound
+            const soundEntity = marker.querySelector(`#SoundToken${markerId.replace(/[^0-9]/g, '')}`);
+            if (soundEntity && soundEntity.components.sound && !soundPlayed) {
+                soundEntity.components.sound.playSound();
+                soundPlayed = true;
+            }
+            
+            setTimeout(() => {
+                tokenOverlay.style.display = 'none';
+            }, 5000);
+        }
+      });
+
       marker.addEventListener('markerFound', () => {
         if (!titleElement && !descriptionElement) {
           titleElement = document.createElement('p');
@@ -135,38 +282,27 @@
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
 
-          // Only play video if it hasn't been started before
-          if (!videoStarted) {
+          // Handle video playback
+          if (!videoStates[videoID].completed) {
+            // Stop current playing video if any
+            if (currentPlayingVideo && currentPlayingVideo !== video) {
+              currentPlayingVideo.pause();
+            }
+            
+            // Play new video
             video.play();
-            videoStarted = true;
+            currentPlayingVideo = video;
+            videoStates[videoID].played = true;
           }
         }
       });
 
-      video.addEventListener('ended', () => {
-        const tokenOverlay = document.getElementById('tokenOverlay');
-        tokenOverlay.style.display = 'block';
-        tokenShown = true;
-        const soundEntity = marker.querySelector('#SoundToken01');
-        if (soundEntity && soundEntity.components.sound) {
-          console.log('Playing sound after 26 seconds');
-          soundEntity.components.sound.playSound();
-          soundPlayed = true;
-        }
-        setTimeout(() => {
-          tokenOverlay.style.display = 'none';
-        }, 5000);
-
-      });
       marker.addEventListener('markerLost', () => {
         if (titleElement && descriptionElement) {
           titleElement.remove();
           descriptionElement.remove();
           titleElement = null;
           descriptionElement = null;
-          // Remove these lines to prevent video from stopping
-          // video.pause();
-          // video.currentTime = 0;
         }
       });
     }
@@ -179,6 +315,71 @@
       'sweepMainVideo'
     );
 
+    setupMarker(
+      'SuffragetteM',
+      "Suffragette", 
+      "This is Suffragette character", 
+      'suffragetteMainVideo'
+    );
+
+    setupMarker(
+      'LongshipArrivalM',
+      "Longship Arrival", 
+      "This is Longship Arrival scene", 
+      'longshipArrivalMainVideo'
+    );
+
+    setupMarker(
+      'VikingEndM',
+      "Viking End", 
+      "This is Viking End scene", 
+      'vikingEndMainVideo'
+    );
+
+    // Replace the RiverheadM and BullRingM setupMarker calls with this custom setup
+    const riverheadMarker = document.querySelector('#RiverheadM');
+    riverheadMarker.addEventListener('markerFound', () => {
+        const overlay = document.getElementById('riverheadOverlay');
+        overlay.style.display = 'block';
+    });
+
+    riverheadMarker.addEventListener('markerLost', () => {
+        const overlay = document.getElementById('riverheadOverlay');
+        overlay.style.display = 'none';
+    });
+
+    const bullringMarker = document.querySelector('#BullRingM');
+    bullringMarker.addEventListener('markerFound', () => {
+        const overlay = document.getElementById('bullringOverlay');
+        overlay.style.display = 'block';
+    });
+
+    bullringMarker.addEventListener('markerLost', () => {
+        const overlay = document.getElementById('bullringOverlay');
+        overlay.style.display = 'none';
+    });
+
+    // Special setup for LongshipText with one-time video play
+    let longshipTextVideoPlayed = false;
+    const longshipTextMarker = document.querySelector('#LongshipTextM');
+    const longshipTextVideo = document.querySelector('#longshipTextVideo');
+
+    longshipTextMarker.addEventListener('markerFound', () => {
+        if (!longshipTextVideoPlayed) {
+            // Stop current playing video if any
+            if (currentPlayingVideo) {
+                currentPlayingVideo.pause();
+            }
+            
+            longshipTextVideo.play();
+            currentPlayingVideo = longshipTextVideo;
+            videoStates['longshipTextVideo'].played = true;
+        }
+    });
+
+    longshipTextVideo.addEventListener('ended', () => {
+        videoStates['longshipTextVideo'].completed = true;
+    });
   </script>
 
 </body>
