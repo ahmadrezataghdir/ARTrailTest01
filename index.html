@@ -102,6 +102,13 @@
       <video id="vikingEndMainVideo" src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="auto"
         autoplay loop="false" playsinline>
       </video>
+
+      <video id="WhiteGiftVideo" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm" preload="auto" autoplay
+        loop="false" playsinline>
+
+      <!-- <video id="EdwardWatkinsVideo" src="" preload="auto" autoplay
+        loop="false" playsinline> -->
+
       <img id="riverheadPhoto" src="./Assets/LandscapePhoto/Riverhead.png">
       <img id="bullringPhoto" src="./Assets/LandscapePhoto/BullRingUrchins.png">
       <video id="longshipTextVideo" 
@@ -215,6 +222,42 @@
       </a-plane>
     </a-marker>
 
+    <a-marker smooth="true" 
+          smoothCount="10" 
+          smoothTolerance="0.01" 
+          smoothThreshold="5" 
+          id="WhiteGiftM" 
+          type="pattern"
+          url="./Assets/Markers/08 WhiteGift Marker/WhiteGiftM.patt">
+      <a-plane id="longshipTextPlane" 
+               width="3" 
+               height="3" 
+               position="0 0 0" 
+               rotation="-90 0 0" 
+               material="shader: flat; 
+                        src: #WhiteGiftVideo; 
+                        transparent: true;">
+      </a-plane>
+    </a-marker>
+
+    <!-- <a-marker smooth="true" 
+          smoothCount="10" 
+          smoothTolerance="0.01" 
+          smoothThreshold="5" 
+          id="EdwardWatkinsM" 
+          type="pattern"
+          url="">
+      <a-plane id="EdwardWatkinsPlane" 
+               width="3" 
+               height="3" 
+               position="0 0 0" 
+               rotation="-90 0 0" 
+               material="shader: flat; 
+                        src: #EdwardWatkinsVideo; 
+                        transparent: true;">
+      </a-plane>
+    </a-marker> -->
+
     <a-entity camera>
     </a-entity>
   </a-scene>
@@ -239,13 +282,17 @@
         'suffragetteMainVideo': { played: false, completed: false },
         'longshipArrivalMainVideo': { played: false, completed: false },
         'vikingEndMainVideo': { played: false, completed: false },
-        'longshipTextVideo': { played: false, completed: false }
+        'longshipTextVideo': { played: false, completed: false },
+        'WhiteGiftVideo': { played: false, completed: false },
+        'EdwardWatkinsVideo': { played: false, completed: false }
     };
 
     const tokenStates = {
         'sweepMainVideo': { shown: false },
         'suffragetteMainVideo': { shown: false },
-        'longshipArrivalMainVideo': { shown: false }
+        'longshipArrivalMainVideo': { shown: false },
+        'WhiteGiftVideo': { shown: false },
+        'EdwardWatkinsVideo': { shown: false }
     };
 
     // Add this variable at the top of your script section
@@ -300,7 +347,7 @@
             disableAllMarkers();
         }
         // Only show token for specific videos
-        if (['sweepMainVideo', 'suffragetteMainVideo', 'longshipArrivalMainVideo'].includes(videoID)) {
+        if (['sweepMainVideo', 'suffragetteMainVideo', 'longshipArrivalMainVideo', 'WhiteGiftVideo', 'EdwardWatkinsVideo'].includes(videoID)) {
             showTokenAndPlaySound(markerId);
         }
       });
@@ -371,6 +418,20 @@
       "Viking End", 
       "This is Viking End scene", 
       'vikingEndMainVideo'
+    );
+
+    setupMarker(
+      'WhiteGiftM',
+      "Viking End", 
+      "This is Viking End scene", 
+      'WhiteGiftVideo'
+    );
+
+    setupMarker(
+      'EdwardWatkinsM',
+      "Viking End", 
+      "This is Viking End scene", 
+      'EdwardWatkinsVideo'
     );
 
     // Replace the RiverheadM and BullRingM setupMarker calls with this custom setup
