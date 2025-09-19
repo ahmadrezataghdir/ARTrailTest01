@@ -275,8 +275,8 @@
     let soundPlayed = false; // Track if sound has been played
     let videoStarted = false; // Track if video has been started
 
-  // Add these variables at the top of your script section
-  let currentPlayingVideo = null;
+    // Add these variables at the top of your script section
+    let currentPlayingVideo = null;
     const videoStates = {
         'sweepMainVideo': { played: false, completed: false },
         'suffragetteMainVideo': { played: false, completed: false },
@@ -307,46 +307,6 @@
         });
         markersDisabled = true;
     }
-
-  // Helper: pause any currently playing video and play only the requested one
-  function playOnlyThisVideo(video) {
-    if (!video) return;
-
-    // If another video is playing, pause it first
-    if (currentPlayingVideo && currentPlayingVideo !== video) {
-      try {
-        currentPlayingVideo.pause();
-      } catch (e) {
-        console.warn('Failed to pause currentPlayingVideo', e);
-      }
-    }
-
-    // Attempt to play the requested video with promise handling (mobile browsers)
-    try {
-      const playPromise = video.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          currentPlayingVideo = video;
-        }).catch((err) => {
-          console.warn('Video play was prevented or failed:', err);
-          // keep reference so future plays can try again
-          currentPlayingVideo = video;
-        });
-      } else {
-        // play() returned undefined (older browsers), set currentPlayingVideo
-        currentPlayingVideo = video;
-      }
-    } catch (err) {
-      console.warn('Error calling play() on video', err);
-      currentPlayingVideo = video;
-    }
-
-    // When the video ends, clear the lock if it's still the current
-    video.addEventListener('ended', function _clearLock() {
-      if (currentPlayingVideo === video) currentPlayingVideo = null;
-      video.removeEventListener('ended', _clearLock);
-    });
-  }
 
     function showTokenAndPlaySound(markerId) {
         const videoId = markerId === 'character01M' ? 'sweepMainVideo' : 
@@ -408,8 +368,14 @@
 
           // Handle video playback
           if (!videoStates[videoID].completed) {
-            // Use helper to ensure only one video plays at a time
-            playOnlyThisVideo(video);
+            // Stop current playing video if any
+            if (currentPlayingVideo && currentPlayingVideo !== video) {
+              currentPlayingVideo.pause();
+            }
+            
+            // Play new video
+            video.play();
+            currentPlayingVideo = video;
             videoStates[videoID].played = true;
           }
         }
@@ -498,15 +464,19 @@
     const longshipTextMarker = document.querySelector('#LongshipTextM');
     const longshipTextVideo = document.querySelector('#longshipTextVideo');
 
-  longshipTextMarker.addEventListener('markerFound', () => {
-    if (markersDisabled) return;
-    if (!longshipTextVideoPlayed) {
-      // Ensure only this video plays
-      playOnlyThisVideo(longshipTextVideo);
-      longshipTextVideoPlayed = true;
-      videoStates['longshipTextVideo'].played = true;
-    }
-  });
+    longshipTextMarker.addEventListener('markerFound', () => {
+        if (markersDisabled) return;
+        if (!longshipTextVideoPlayed) {
+            // Stop current playing video if any
+            if (currentPlayingVideo) {
+                currentPlayingVideo.pause();
+            }
+            
+            longshipTextVideo.play();
+            currentPlayingVideo = longshipTextVideo;
+            videoStates['longshipTextVideo'].played = true;
+        }
+    });
 
     longshipTextVideo.addEventListener('ended', () => {
         videoStates['longshipTextVideo'].completed = true;
