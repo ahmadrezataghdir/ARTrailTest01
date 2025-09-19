@@ -87,27 +87,22 @@
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
     <a-assets>
-      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto" autoplay
-        loop="false" playsinline>
-
-      </video>
+      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto"
+        loop="false" playsinline></video>
       <video id="suffragetteMainVideo" src="./Assets/CharactersAnimations/02 Suffragette/SuffragetteMain.webm"
-        preload="auto" autoplay loop="false" playsinline>
-      </video>
+        preload="auto" loop="false" playsinline></video>
       
       <video id="longshipArrivalMainVideo" src="./Assets/CharactersAnimations/04 LongshipArrival/LongshipArrivalMain.webm"
-        preload="auto" autoplay loop="false" playsinline>
-      </video>
+        preload="auto" loop="false" playsinline></video>
       
       <video id="vikingEndMainVideo" src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="auto"
-        autoplay loop="false" playsinline>
-      </video>
+        loop="false" playsinline></video>
 
-      <video id="WhiteGiftVideo" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm" preload="auto" autoplay
-        loop="false" playsinline>
+      <video id="WhiteGiftVideo" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm" preload="auto"
+        loop="false" playsinline></video>
 
-      <!-- <video id="EdwardWatkinsVideo" src="" preload="auto" autoplay
-        loop="false" playsinline> -->
+      <video id="EdwardWatkinsVideo" src="./Assets/CharactersAnimations/09 EdwardWatkins/EdwardWatkinsMain.webm" preload="auto"
+        loop="false" playsinline></video>
 
       <img id="riverheadPhoto" src="./Assets/LandscapePhoto/Riverhead.png">
       <img id="bullringPhoto" src="./Assets/LandscapePhoto/BullRingUrchins.png">
@@ -123,7 +118,7 @@
 
       <a-entity id="SoundToken01" sound="src: ./Assets/Voices/SoundToken01.mp3; 
                autoplay: false; 
-               volume: 3; 
+               volume: 2; 
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
@@ -143,7 +138,7 @@
       url="./Assets/Markers/02 Suffragette Marker/SuffragetteM.patt">
       <a-entity id="SoundToken02" sound="src: ./Assets/Voices/SoundToken02.mp3; 
                autoplay: false; 
-               volume: 4; 
+               volume: 2; 
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
@@ -158,7 +153,7 @@
       url="./Assets/Markers/04 LongshipArrival Marker/LongshipArrivalM.patt">
       <a-entity id="SoundToken03" sound="src: ./Assets/Voices/SoundToken03.mp3; 
                autoplay: false; 
-               volume: 4; 
+               volume: 2; 
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
@@ -173,7 +168,7 @@
       url="./Assets/Markers/05 VikingEnd Marker/VikingEndM.patt">
       <a-entity id="SoundToken04" sound="src: ./Assets/Voices/SoundToken04.mp3; 
                autoplay: false; 
-               volume: 4; 
+               volume: 2; 
                distanceModel: linear; 
                rolloffFactor: 0;
                preload: true">
@@ -240,13 +235,13 @@
       </a-plane>
     </a-marker>
 
-    <!-- <a-marker smooth="true" 
+    <a-marker smooth="true" 
           smoothCount="10" 
           smoothTolerance="0.01" 
           smoothThreshold="5" 
           id="EdwardWatkinsM" 
           type="pattern"
-          url="">
+          url="./Assets/Markers/09 EdwardWatkins Marker/EdwardWatkinsM.patt">
       <a-plane id="EdwardWatkinsPlane" 
                width="5" 
                height="5" 
@@ -256,7 +251,7 @@
                         src: #EdwardWatkinsVideo; 
                         transparent: true;">
       </a-plane>
-    </a-marker> -->
+    </a-marker>
 
     <a-entity camera>
     </a-entity>
@@ -307,6 +302,31 @@
         });
         markersDisabled = true;
     }
+
+  // Prevent autoplay: pause all videos on initial load
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('video').forEach(v => { try { v.pause(); v.currentTime = 0; } catch (e) {} });
+  });
+
+  // Helper to ensure only one video plays at a time
+  function playOnlyThisVideo(video) {
+    if (!video) return;
+    if (currentPlayingVideo && currentPlayingVideo !== video) {
+      try { currentPlayingVideo.pause(); } catch (e) {}
+    }
+    try {
+      const p = video.play();
+      if (p && typeof p.then === 'function') {
+        p.then(() => { currentPlayingVideo = video; }).catch(() => { currentPlayingVideo = video; });
+      } else {
+        currentPlayingVideo = video;
+      }
+    } catch (e) {
+      currentPlayingVideo = video;
+    }
+    const onEnd = () => { if (currentPlayingVideo === video) currentPlayingVideo = null; video.removeEventListener('ended', onEnd); };
+    video.addEventListener('ended', onEnd);
+  }
 
     function showTokenAndPlaySound(markerId) {
         const videoId = markerId === 'character01M' ? 'sweepMainVideo' : 
@@ -366,16 +386,9 @@
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
 
-          // Handle video playback
+          // Handle video playback: start when marker is found
           if (!videoStates[videoID].completed) {
-            // Stop current playing video if any
-            if (currentPlayingVideo && currentPlayingVideo !== video) {
-              currentPlayingVideo.pause();
-            }
-            
-            // Play new video
-            video.play();
-            currentPlayingVideo = video;
+            playOnlyThisVideo(video);
             videoStates[videoID].played = true;
           }
         }
@@ -472,7 +485,7 @@
                 currentPlayingVideo.pause();
             }
             
-            longshipTextVideo.play();
+            playOnlyThisVideo(longshipTextVideo);
             currentPlayingVideo = longshipTextVideo;
             videoStates['longshipTextVideo'].played = true;
         }
