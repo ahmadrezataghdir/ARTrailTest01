@@ -87,27 +87,22 @@
     <!-- <a-marker preset="hiro" smooth="true"> -->
 
     <a-assets>
-      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto" autoplay
-        loop="false" playsinline>
-
-      </video>
+      <video id="sweepMainVideo" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm" preload="auto"
+        loop="false" playsinline></video>
       <video id="suffragetteMainVideo" src="./Assets/CharactersAnimations/02 Suffragette/SuffragetteMain.webm"
-        preload="auto" autoplay loop="false" playsinline>
-      </video>
+        preload="auto" loop="false" playsinline></video>
       
       <video id="longshipArrivalMainVideo" src="./Assets/CharactersAnimations/04 LongshipArrival/LongshipArrivalMain.webm"
-        preload="auto" autoplay loop="false" playsinline>
-      </video>
+        preload="auto" loop="false" playsinline></video>
       
       <video id="vikingEndMainVideo" src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="auto"
-        autoplay loop="false" playsinline>
-      </video>
+        loop="false" playsinline></video>
 
-      <video id="WhiteGiftVideo" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm" preload="auto" autoplay
-        loop="false" playsinline>
+      <video id="WhiteGiftVideo" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm" preload="auto"
+        loop="false" playsinline></video>
 
-      <video id="EdwardWatkinsVideo" src="./Assets/CharactersAnimations/09 EdwardWatkins/EdwardWatkinsMain.webm" preload="auto" autoplay
-        loop="false" playsinline>
+      <video id="EdwardWatkinsVideo" src="./Assets/CharactersAnimations/09 EdwardWatkins/EdwardWatkinsMain.webm" preload="auto"
+        loop="false" playsinline></video>
 
       <img id="riverheadPhoto" src="./Assets/LandscapePhoto/Riverhead.png">
       <img id="bullringPhoto" src="./Assets/LandscapePhoto/BullRingUrchins.png">
@@ -366,16 +361,9 @@
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
 
-          // Handle video playback
+          // Handle video playback: play only when marker is found
           if (!videoStates[videoID].completed) {
-            // Stop current playing video if any
-            if (currentPlayingVideo && currentPlayingVideo !== video) {
-              currentPlayingVideo.pause();
-            }
-            
-            // Play new video
-            video.play();
-            currentPlayingVideo = video;
+            playOnlyThisVideo(video);
             videoStates[videoID].played = true;
           }
         }
@@ -466,16 +454,12 @@
 
     longshipTextMarker.addEventListener('markerFound', () => {
         if (markersDisabled) return;
-        if (!longshipTextVideoPlayed) {
-            // Stop current playing video if any
-            if (currentPlayingVideo) {
-                currentPlayingVideo.pause();
-            }
-            
-            longshipTextVideo.play();
-            currentPlayingVideo = longshipTextVideo;
-            videoStates['longshipTextVideo'].played = true;
-        }
+    if (!longshipTextVideoPlayed) {
+      // Ensure only this video plays
+      playOnlyThisVideo(longshipTextVideo);
+      longshipTextVideoPlayed = true;
+      videoStates['longshipTextVideo'].played = true;
+    }
     });
 
     longshipTextVideo.addEventListener('ended', () => {
