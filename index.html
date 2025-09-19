@@ -350,6 +350,13 @@
       marker.addEventListener('markerFound', () => {
         if (markersDisabled) return; // Skip if markers are disabled
 
+        // Always attempt to play the video's media when the marker is found
+        if (!videoStates[videoID].completed) {
+          playOnlyThisVideo(video);
+          videoStates[videoID].played = true;
+        }
+
+        // Create title/description once
         if (!titleElement && !descriptionElement) {
           titleElement = document.createElement('p');
           titleElement.className = "Title";
@@ -360,12 +367,6 @@
           descriptionElement.className = "Description";
           descriptionElement.textContent = descriptionText;
           document.body.appendChild(descriptionElement);
-
-          // Handle video playback: play only when marker is found
-          if (!videoStates[videoID].completed) {
-            playOnlyThisVideo(video);
-            videoStates[videoID].played = true;
-          }
         }
       });
 
