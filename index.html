@@ -122,6 +122,25 @@
       color: var(--viking-desc-color);
       text-align: center;
     }
+    /* Simple spinner for buffered loading */
+    .video-spinner {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2100;
+      width: 48px;
+      height: 48px;
+      border: 6px solid rgba(255,255,255,0.2);
+      border-top-color: rgba(255,255,255,0.9);
+      border-radius: 50%;
+      display: none;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: translate(-50%, -50%) rotate(360deg); }
+    }
   </style>
 </head>
 
@@ -156,32 +175,35 @@
   <p id="TokenDescriptionvikingEnd" class="Description VikingDescriptionText" style="display:none">Thank you for taking part in the trail.</p>
 
   <video id="sweepMainVideo" class="video-overlay" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm"
-    preload="auto" playsinline>
+    preload="metadata" playsinline>
 
   </video>
   <video id="suffragetteMainVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/02 Suffragette/SuffragetteMain.webm" preload="auto" playsinline>
+    src="./Assets/CharactersAnimations/02 Suffragette/SuffragetteMain.webm" preload="metadata" playsinline>
   </video>
 
   <video id="longshipArrivalMainVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/04 LongshipArrival/LongshipArrivalMain.webm" preload="auto" playsinline>
+    src="./Assets/CharactersAnimations/04 LongshipArrival/LongshipArrivalMain.webm" preload="metadata" playsinline>
   </video>
 
   <video id="vikingEndMainVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="auto" playsinline>
+    src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="metadata" playsinline>
   </video>
 
   <video id="WhiteGiftVideo" class="video-overlay" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm"
-    preload="auto" playsinline>
+    preload="metadata" playsinline>
   </video>
 
   <video id="EdwardWatkinsVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/09 EdwardWatkins/EdwardWatkinsMain.webm" preload="auto" playsinline>
+    src="./Assets/CharactersAnimations/09 EdwardWatkins/EdwardWatkinsMain.webm" preload="metadata" playsinline>
   </video>
 
   <video id="longshipTextVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/03 LongshipText/LongshipTextMain.webm" preload="auto" playsinline>
+    src="./Assets/CharactersAnimations/03 LongshipText/LongshipTextMain.webm" preload="metadata" playsinline>
   </video>
+
+  <!-- Spinner shown while waiting for video buffering on slow networks -->
+  <div id="videoSpinner" class="video-spinner" aria-hidden="true"></div>
 
       <a-scene embedded arjs
         renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
@@ -324,6 +346,67 @@
           overlayImagePersistent = true;
           // disable markers so camera won't recognize them anymore
           disableAllMarkers();
+        }
+
+        // Spinner helpers and buffered play logic
+        function showSpinner() {
+          const s = document.getElementById('videoSpinner');
+          if (s) s.style.display = 'block';
+        }
+
+        function hideSpinner() {
+          const s = document.getElementById('videoSpinner');
+          if (s) s.style.display = 'none';
+        }
+
+        // Try to ensure a small buffer or canplaythrough before playing to reduce stutter on slow connections
+        function ensureBufferedAndPlay(video) {
+          return new Promise(resolve => {
+            if (!video) return resolve();
+            // If video already ready to play through, just play
+            if (video.readyState >= 4) {
+              video.play().catch(()=>{}).then(resolve);
+              return;
+            }
+
+            let resolved = false;
+            function _resolve() {
+              if (resolved) return; resolved = true;
+              hideSpinner();
+              video.play().catch(()=>{}).then(() => resolve());
+            }
+
+            // show spinner while waiting
+            showSpinner();
+
+            // If canplaythrough fires, play immediately
+            const onCanPlayThrough = () => { cleanup(); _resolve(); };
+            const onCanPlay = () => {
+              // Try to start when we have enough buffered (first 0.5s)
+              const buffered = video.buffered;
+              if (buffered && buffered.length) {
+                const bufferedEnd = buffered.end(buffered.length - 1);
+                if (bufferedEnd - video.currentTime >= 0.5) { cleanup(); _resolve(); }
+              }
+            };
+            const onError = () => { cleanup(); hideSpinner(); resolve(); };
+
+            function cleanup() {
+              video.removeEventListener('canplaythrough', onCanPlayThrough);
+              video.removeEventListener('canplay', onCanPlay);
+              video.removeEventListener('error', onError);
+            }
+
+            video.addEventListener('canplaythrough', onCanPlayThrough);
+            video.addEventListener('canplay', onCanPlay);
+            video.addEventListener('error', onError);
+
+            // Kick off loading if not already
+            try { video.load(); } catch (e) {}
+
+            // Fallback timeout: after 5s try to play anyway
+            setTimeout(() => { if (!resolved) { cleanup(); _resolve(); } }, 5000);
+          });
         }
 
         // Add this function to disable all markers
@@ -507,13 +590,12 @@
                   console.log(`Paused video: ${currentPlayingVideo.id}`);
                 }
 
-                // Play new video
-                // if (video.paused) {
-              
-                  video.play();
+                // Play new video using buffered-play helper to reduce stutter
+                (async () => {
                   const overlay = document.getElementById(`${videoID}`);
                   overlay.style.display = 'block';
-                // }
+                  await ensureBufferedAndPlay(video);
+                })();
     
                 currentPlayingVideo = video;
                 videoStates[videoID].played = true;
@@ -697,9 +779,11 @@
               currentPlayingVideo.pause();
             }
 
-            longshipTextVideo.play();
-            currentPlayingVideo = longshipTextVideo;
-            videoStates['longshipTextVideo'].played = true;
+            (async () => {
+              await ensureBufferedAndPlay(longshipTextVideo);
+              currentPlayingVideo = longshipTextVideo;
+              videoStates['longshipTextVideo'].played = true;
+            })();
             // mark found (Longship text acts like a discovery)
             foundFlags['LongshipArrivalM'] = true;
           }
