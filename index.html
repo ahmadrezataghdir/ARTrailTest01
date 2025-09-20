@@ -249,6 +249,18 @@
 
         // Add this variable at the top of your script section
         let markersDisabled = false;
+        // When an overlay-image is shown and should remain on screen forever
+        let overlayImagePersistent = false;
+
+        // Helper to show overlay-image elements persistently and disable markers
+        function showOverlayImagePersistent(id) {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.style.display = 'block';
+          overlayImagePersistent = true;
+          // disable markers so camera won't recognize them anymore
+          disableAllMarkers();
+        }
 
         // Add this function to disable all markers
         function disableAllMarkers() {
@@ -329,8 +341,8 @@
             // store timer on tokenStates so markerLost can clear it and restore UI immediately
             if (videoID) tokenStates[videoID].hideTimer = tokenHideTimer;
           } else {
-            const overlay = document.getElementById('congratsOverlay');
-            overlay.style.display = 'block';
+            // Show congrats overlay persistently and disable markers
+            showOverlayImagePersistent('congratsOverlay');
           }
 
         }
@@ -451,7 +463,8 @@
             const tokenOverlay = document.getElementById('tokenOverlay');
             if (tokenOverlay) tokenOverlay.style.display = 'none';
             const congrats = document.getElementById('congratsOverlay');
-            if (congrats) congrats.style.display = 'none';
+            // Do not hide persistent overlay-images
+            if (congrats && !overlayImagePersistent) congrats.style.display = 'none';
 
             // Clear any pending hide timers for tokens and reset tokenStates
             Object.keys(tokenStates).forEach(k => {
