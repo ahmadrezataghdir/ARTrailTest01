@@ -278,6 +278,38 @@
         // When an overlay-image is shown and should remain on screen forever
         let overlayImagePersistent = false;
 
+        // Coin values for each marker and tracking of which markers were found
+        const coinValues = {
+          'character01M': 2,
+          'SuffragetteM': 6,
+          'LongshipArrivalM': 1,
+          'VikingEndM': 8,
+          'RiverheadM': 7,
+          'BullRingM': 3,
+          'WhiteGiftM': 5,
+          'EdwardWatkinsM': 4
+        };
+
+        const foundFlags = {
+          'character01M': false,
+          'SuffragetteM': false,
+          'LongshipArrivalM': false,
+          'VikingEndM': false,
+          'RiverheadM': false,
+          'BullRingM': false,
+          'WhiteGiftM': false,
+          'EdwardWatkinsM': false
+        };
+
+        // Calculate total coins from markers that have been found
+        function calculateTotalCoins() {
+          let total = 0;
+          Object.keys(foundFlags).forEach(k => {
+            if (foundFlags[k]) total += (coinValues[k] || 0);
+          });
+          return total;
+        }
+
         // Helper to show overlay-image elements persistently and disable markers
         function showOverlayImagePersistent(id) {
           const el = document.getElementById(id);
@@ -443,6 +475,11 @@
 
             if (markersDisabled) return; // Skip if markers are disabled
 
+            // Mark this marker as found for scoring
+            if (foundFlags.hasOwnProperty(markerId)) {
+              foundFlags[markerId] = true;
+            }
+
             // Special handling for vikingEndMainVideo
             if (videoID === 'vikingEndMainVideo') {
 
@@ -579,6 +616,9 @@
           const overlay = document.getElementById('riverheadOverlay');
           overlay.style.display = 'block';
 
+          // mark found
+          foundFlags['RiverheadM'] = true;
+
           // Create Title and Description if not already present
           if (!titleElement && !descriptionElement) {
             titleElement = document.createElement('p');
@@ -613,6 +653,9 @@
           if (markersDisabled) return;
           const overlay = document.getElementById('bullringOverlay');
           overlay.style.display = 'block';
+
+          // mark found
+          foundFlags['BullRingM'] = true;
 
           if (!titleElement && !descriptionElement) {
             titleElement = document.createElement('p');
@@ -657,6 +700,8 @@
             longshipTextVideo.play();
             currentPlayingVideo = longshipTextVideo;
             videoStates['longshipTextVideo'].played = true;
+            // mark found (Longship text acts like a discovery)
+            foundFlags['LongshipArrivalM'] = true;
           }
         });
 
@@ -700,7 +745,12 @@
 
             if (anyVisible) {
               if (title) title.style.display = 'block';
-              if (desc) desc.style.display = 'block';
+              if (desc) {
+                // Update description with total coins collected
+                const total = calculateTotalCoins();
+                desc.textContent = `Total Tokens Collected: ${total} Coins`;
+                desc.style.display = 'block';
+              }
             } else {
               if (title && !overlayImagePersistent) title.style.display = 'none';
               if (desc && !overlayImagePersistent) desc.style.display = 'none';
