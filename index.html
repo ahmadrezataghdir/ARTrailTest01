@@ -336,49 +336,47 @@
         setupMarker(
           'character01M',
           "Sweep", // Title - replace with your desired title
-          "This is Sweep This", // Description - replace with your desired description
+          "", // Description - replace with your desired description
           'sweepMainVideo'
         );
 
         setupMarker(
           'SuffragetteM',
           "Suffragette",
-          "This is Suffragette character",
+          "",
           'suffragetteMainVideo'
         );
 
         setupMarker(
           'LongshipArrivalM',
           "Longship Arrival",
-          "This is Longship Arrival scene",
+          "",
           'longshipArrivalMainVideo'
         );
 
         setupMarker(
           'VikingEndM',
           "Viking End",
-          "This is Viking End scene",
+          "",
           'vikingEndMainVideo'
         );
 
         setupMarker(
           'WhiteGiftM',
-          "White Gift",
-          "This is White Gift scene",
+          "WhiteGift",
+          "",
           'WhiteGiftVideo'
         );
 
         setupMarker(
           'EdwardWatkinsM',
           "Edward Watkins",
-          "This is Edward Watkins scene",
+          "",
           'EdwardWatkinsVideo'
         );
 
         // Replace the RiverheadM and BullRingM setupMarker calls with this custom setup
-        const riverheadMarker = document.querySelector('#RiverheadM');
-        let riverheadTimer = null;
-        let riverheadTokenTimer = null;
+  const riverheadMarker = document.querySelector('#RiverheadM');
         riverheadMarker.addEventListener('markerFound', () => {
           if (markersDisabled) return;
           // Show photo overlay
@@ -398,16 +396,7 @@
             document.body.appendChild(descriptionElement);
           }
 
-          // After 3 seconds show tokenOverlay, then hide after 5 seconds
-          clearTimeout(riverheadTimer);
-          clearTimeout(riverheadTokenTimer);
-          riverheadTimer = setTimeout(() => {
-            const tokenOverlay = document.getElementById('tokenOverlay');
-            tokenOverlay.style.display = 'block';
-            riverheadTokenTimer = setTimeout(() => {
-              tokenOverlay.style.display = 'none';
-            }, 5000);
-          }, 3000);
+          // (No token overlay for Riverhead)
         });
 
         riverheadMarker.addEventListener('markerLost', () => {
@@ -420,15 +409,10 @@
             titleElement = null;
             descriptionElement = null;
           }
-          clearTimeout(riverheadTimer);
-          clearTimeout(riverheadTokenTimer);
-          riverheadTimer = null;
-          riverheadTokenTimer = null;
+          // nothing to clear (no token timers)
         });
 
-        const bullringMarker = document.querySelector('#BullRingM');
-        let bullringTimer = null;
-        let bullringTokenTimer = null;
+  const bullringMarker = document.querySelector('#BullRingM');
         bullringMarker.addEventListener('markerFound', () => {
           if (markersDisabled) return;
           const overlay = document.getElementById('bullringOverlay');
@@ -446,15 +430,7 @@
             document.body.appendChild(descriptionElement);
           }
 
-          clearTimeout(bullringTimer);
-          clearTimeout(bullringTokenTimer);
-          bullringTimer = setTimeout(() => {
-            const tokenOverlay = document.getElementById('tokenOverlay');
-            tokenOverlay.style.display = 'block';
-            bullringTokenTimer = setTimeout(() => {
-              tokenOverlay.style.display = 'none';
-            }, 5000);
-          }, 3000);
+          // (No token overlay for Bull Ring)
         });
 
         bullringMarker.addEventListener('markerLost', () => {
@@ -466,10 +442,7 @@
             titleElement = null;
             descriptionElement = null;
           }
-          clearTimeout(bullringTimer);
-          clearTimeout(bullringTokenTimer);
-          bullringTimer = null;
-          bullringTokenTimer = null;
+          // nothing to clear (no token timers)
         });
 
         // Special setup for LongshipText with one-time video play
