@@ -377,27 +377,99 @@
 
         // Replace the RiverheadM and BullRingM setupMarker calls with this custom setup
         const riverheadMarker = document.querySelector('#RiverheadM');
+        let riverheadTimer = null;
+        let riverheadTokenTimer = null;
         riverheadMarker.addEventListener('markerFound', () => {
           if (markersDisabled) return;
+          // Show photo overlay
           const overlay = document.getElementById('riverheadOverlay');
           overlay.style.display = 'block';
+
+          // Create Title and Description if not already present
+          if (!titleElement && !descriptionElement) {
+            titleElement = document.createElement('p');
+            titleElement.className = 'Title';
+            titleElement.textContent = 'Riverhead';
+            document.body.appendChild(titleElement);
+
+            descriptionElement = document.createElement('p');
+            descriptionElement.className = 'Description';
+            descriptionElement.textContent = 'A view of the Riverhead landscape.';
+            document.body.appendChild(descriptionElement);
+          }
+
+          // After 3 seconds show tokenOverlay, then hide after 5 seconds
+          clearTimeout(riverheadTimer);
+          clearTimeout(riverheadTokenTimer);
+          riverheadTimer = setTimeout(() => {
+            const tokenOverlay = document.getElementById('tokenOverlay');
+            tokenOverlay.style.display = 'block';
+            riverheadTokenTimer = setTimeout(() => {
+              tokenOverlay.style.display = 'none';
+            }, 5000);
+          }, 3000);
         });
 
         riverheadMarker.addEventListener('markerLost', () => {
           const overlay = document.getElementById('riverheadOverlay');
           overlay.style.display = 'none';
+          // remove title/description
+          if (titleElement && descriptionElement) {
+            titleElement.remove();
+            descriptionElement.remove();
+            titleElement = null;
+            descriptionElement = null;
+          }
+          clearTimeout(riverheadTimer);
+          clearTimeout(riverheadTokenTimer);
+          riverheadTimer = null;
+          riverheadTokenTimer = null;
         });
 
         const bullringMarker = document.querySelector('#BullRingM');
+        let bullringTimer = null;
+        let bullringTokenTimer = null;
         bullringMarker.addEventListener('markerFound', () => {
           if (markersDisabled) return;
           const overlay = document.getElementById('bullringOverlay');
           overlay.style.display = 'block';
+
+          if (!titleElement && !descriptionElement) {
+            titleElement = document.createElement('p');
+            titleElement.className = 'Title';
+            titleElement.textContent = 'Bull Ring';
+            document.body.appendChild(titleElement);
+
+            descriptionElement = document.createElement('p');
+            descriptionElement.className = 'Description';
+            descriptionElement.textContent = 'A historic bull ring site.';
+            document.body.appendChild(descriptionElement);
+          }
+
+          clearTimeout(bullringTimer);
+          clearTimeout(bullringTokenTimer);
+          bullringTimer = setTimeout(() => {
+            const tokenOverlay = document.getElementById('tokenOverlay');
+            tokenOverlay.style.display = 'block';
+            bullringTokenTimer = setTimeout(() => {
+              tokenOverlay.style.display = 'none';
+            }, 5000);
+          }, 3000);
         });
 
         bullringMarker.addEventListener('markerLost', () => {
           const overlay = document.getElementById('bullringOverlay');
           overlay.style.display = 'none';
+          if (titleElement && descriptionElement) {
+            titleElement.remove();
+            descriptionElement.remove();
+            titleElement = null;
+            descriptionElement = null;
+          }
+          clearTimeout(bullringTimer);
+          clearTimeout(bullringTokenTimer);
+          bullringTimer = null;
+          bullringTokenTimer = null;
         });
 
         // Special setup for LongshipText with one-time video play
