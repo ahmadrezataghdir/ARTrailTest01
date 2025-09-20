@@ -103,6 +103,25 @@
       z-index: 2000;
       display: none;
     }
+    /* Viking end token title/description variables and styles */
+    :root {
+      --viking-title-size: 48px; /* default size for viking title */
+      --viking-title-color: #ffffff; /* default color for viking title */
+      --viking-desc-size: 28px; /* default size for viking description */
+      --viking-desc-color: #d5d75f; /* default color for viking description */
+    }
+
+    .VikingTitleText {
+      font-size: var(--viking-title-size);
+      color: var(--viking-title-color);
+      text-align: center;
+    }
+
+    .VikingDescriptionText {
+      font-size: var(--viking-desc-size);
+      color: var(--viking-desc-color);
+      text-align: center;
+    }
   </style>
 </head>
 
@@ -131,6 +150,10 @@
 
   <p id="TokenTitleEdwardWatkins" class="Title TokenTitleText" style="display:none">Edward Watkins Token Title</p>
   <p id="TokenDescriptionEdwardWatkins" class="Description TokenDescriptionText" style="display:none">Edward Watkins token description.</p>
+
+  <!-- Viking end title and description: shown whenever any .overlay-image becomes visible -->
+  <p id="TokenTitlevikingEnd" class="Title VikingTitleText" style="display:none">The Trail Ends Here</p>
+  <p id="TokenDescriptionvikingEnd" class="Description VikingDescriptionText" style="display:none">Thank you for taking part in the trail.</p>
 
   <video id="sweepMainVideo" class="video-overlay" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm"
     preload="auto" playsinline>
@@ -660,6 +683,47 @@
                 console.error(`Error fetching marker pattern for #${marker.id}: ${url}`, err);
               });
           });
+        });
+        // Observe overlay-image visibility and show/hide the viking end title/description
+        document.addEventListener('DOMContentLoaded', () => {
+          const title = document.getElementById('TokenTitlevikingEnd');
+          const desc = document.getElementById('TokenDescriptionvikingEnd');
+
+          // Helper to update visibility based on any .overlay-image being visible
+          function updateVikingTexts() {
+            const overlays = document.querySelectorAll('.overlay-image');
+            let anyVisible = false;
+            overlays.forEach(o => {
+              if (o.style.display && o.style.display !== 'none') anyVisible = true;
+              else if (window.getComputedStyle(o).display !== 'none') anyVisible = true;
+            });
+
+            if (anyVisible) {
+              if (title) title.style.display = 'block';
+              if (desc) desc.style.display = 'block';
+            } else {
+              if (title && !overlayImagePersistent) title.style.display = 'none';
+              if (desc && !overlayImagePersistent) desc.style.display = 'none';
+            }
+          }
+
+          // Initial check
+          updateVikingTexts();
+
+          // Use a MutationObserver to watch for attribute changes (display style) on overlay-images
+          const observer = new MutationObserver(mutations => {
+            let changed = false;
+            mutations.forEach(m => {
+              if (m.type === 'attributes' && (m.attributeName === 'style' || m.attributeName === 'class')) changed = true;
+            });
+            if (changed) updateVikingTexts();
+          });
+
+          const overlays = document.querySelectorAll('.overlay-image');
+          overlays.forEach(o => observer.observe(o, { attributes: true, attributeFilter: ['style', 'class'] }));
+
+          // Also expose a manual call in case overlays are toggled by scripts directly
+          window.updateVikingTexts = updateVikingTexts;
         });
       </script>
 
