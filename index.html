@@ -145,7 +145,7 @@
         </a-marker>
 
         <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="VikingEndM"
-          type="pattern" url="./Assets/Markers/05 VikingEnd Marker/VikingEndM.patt">
+          type="pattern" url="./Assets/Markers/05%20VikingEnd%20Marker/VikingEndM.patt">
 
         </a-marker>
 
@@ -466,6 +466,27 @@
 
         longshipTextVideo.addEventListener('ended', () => {
           videoStates['longshipTextVideo'].completed = true;
+        });
+
+        // Diagnostic: verify marker .patt files are reachable (logs 200/404)
+        document.addEventListener('DOMContentLoaded', () => {
+          const markers = document.querySelectorAll('a-marker');
+          markers.forEach(marker => {
+            const url = marker.getAttribute('url');
+            if (!url) return;
+            // Try fetching the pattern file to check availability
+            fetch(url, { method: 'GET' })
+              .then(resp => {
+                if (!resp.ok) {
+                  console.warn(`Marker pattern not reachable for #${marker.id}: ${url} (status ${resp.status})`);
+                } else {
+                  console.log(`Marker pattern OK for #${marker.id}: ${url} (status ${resp.status})`);
+                }
+              })
+              .catch(err => {
+                console.error(`Error fetching marker pattern for #${marker.id}: ${url}`, err);
+              });
+          });
         });
       </script>
 
