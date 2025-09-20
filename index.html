@@ -6,12 +6,19 @@
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   <style>
+    /* Token title/description styling variables - edit these to change token text appearance */
+    :root {
+      --token-title-size: 40px;
+      --token-title-color: #ffffff;
+      --token-desc-size: 30px;
+      --token-desc-color: #d5d75f;
+    }
     p.Description {
       position: fixed;
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 18px;
+      font-size: 20px;
       color: rgb(255, 255, 255);
       background-color: rgba(0, 0, 0, 0.189);
       padding: 10px;
@@ -24,12 +31,25 @@
 
     }
 
+    /* Specific classes for token text so they can have independent styles */
+    .TokenTitleText {
+      font-size: var(--token-title-size);
+      color: var(--token-title-color);
+      text-align: center;
+    }
+
+    .TokenDescriptionText {
+      font-size: var(--token-desc-size);
+      color: var(--token-desc-color);
+      text-align: center;
+    }
+
     p.Title {
       position: fixed;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 24px;
+      font-size: 30px;
       color: rgb(255, 255, 255);
       background-color: rgba(0, 0, 0, 0.189);
       padding: 10px;
@@ -75,8 +95,8 @@
 
     .video-overlay {
       position: fixed;
-      top: 50%;
-      left: 50%;
+      top: 70%;
+      left: 70%;
       transform: translate(-50%, -50%);
       width: 95%;
       max-width: 800px;
@@ -94,20 +114,20 @@
   <img id="bullringOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/BullRingUrchins.png">
 
   <!-- Token titles and descriptions (editable directly) -->
-  <p id="TokenTitleSuffragette" class="Title" style="display:none">Suffragette Token Title</p>
-  <p id="TokenDescriptionSuffragette" class="Description" style="display:none">Suffragette token description.</p>
+  <p id="TokenTitleSuffragette" class="Title TokenTitleText" style="display:none">Suffragette Token Title</p>
+  <p id="TokenDescriptionSuffragette" class="Description TokenDescriptionText" style="display:none">Suffragette token description.</p>
 
-  <p id="TokenTitleSweep" class="Title" style="display:none">Sweep Token Title</p>
-  <p id="TokenDescriptionSweep" class="Description" style="display:none">Sweep token description.</p>
+  <p id="TokenTitleSweep" class="Title TokenTitleText" style="display:none">Sweep Token Title</p>
+  <p id="TokenDescriptionSweep" class="Description TokenDescriptionText" style="display:none">Sweep token description.</p>
 
-  <p id="TokenTitleLongshipArrival" class="Title" style="display:none">Longship Arrival Token Title</p>
-  <p id="TokenDescriptionLongshipArrival" class="Description" style="display:none">Longship Arrival token description.</p>
+  <p id="TokenTitleLongshipArrival" class="Title TokenTitleText" style="display:none">Longship Arrival Token Title</p>
+  <p id="TokenDescriptionLongshipArrival" class="Description TokenDescriptionText" style="display:none">Longship Arrival token description.</p>
 
-  <p id="TokenTitleWhiteGift" class="Title" style="display:none">White Gift Token Title</p>
-  <p id="TokenDescriptionWhiteGift" class="Description" style="display:none">White Gift token description.</p>
+  <p id="TokenTitleWhiteGift" class="Title TokenTitleText" style="display:none">White Gift Token Title</p>
+  <p id="TokenDescriptionWhiteGift" class="Description TokenDescriptionText" style="display:none">White Gift token description.</p>
 
-  <p id="TokenTitleEdwardWatkins" class="Title" style="display:none">Edward Watkins Token Title</p>
-  <p id="TokenDescriptionEdwardWatkins" class="Description" style="display:none">Edward Watkins token description.</p>
+  <p id="TokenTitleEdwardWatkins" class="Title TokenTitleText" style="display:none">Edward Watkins Token Title</p>
+  <p id="TokenDescriptionEdwardWatkins" class="Description TokenDescriptionText" style="display:none">Edward Watkins token description.</p>
 
   <video id="sweepMainVideo" class="video-overlay" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm"
     preload="auto" playsinline>
@@ -331,7 +351,7 @@
             if (!document.getElementById(m.idTitle)) {
               const t = document.createElement('p');
               t.id = m.idTitle;
-              t.className = 'Title';
+              t.className = 'Title TokenTitleText';
               t.textContent = m.title; // user can edit this directly in the HTML later
               t.style.display = 'none';
               document.body.appendChild(t);
@@ -341,7 +361,7 @@
             if (!document.getElementById(m.idDesc)) {
               const d = document.createElement('p');
               d.id = m.idDesc;
-              d.className = 'Description';
+              d.className = 'Description TokenDescriptionText';
               d.textContent = m.desc; // user can edit this directly in the HTML later
               d.style.display = 'none';
               document.body.appendChild(d);
