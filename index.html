@@ -774,6 +774,29 @@
 
           // Also expose a manual call in case overlays are toggled by scripts directly
           window.updateVikingTexts = updateVikingTexts;
+
+          // Provide runtime helpers to change viking description size
+          window.setVikingDescriptionSize = function(size) {
+            // Accept values like '32px' or numbers (treated as px)
+            const val = typeof size === 'number' ? `${size}px` : size;
+            document.documentElement.style.setProperty('--viking-desc-size', val);
+            // If visible, force update so layout recalculates
+            updateVikingTexts();
+          };
+
+          window.increaseVikingDescriptionSize = function(delta) {
+            const computed = getComputedStyle(document.documentElement).getPropertyValue('--viking-desc-size').trim() || '28px';
+            const current = parseFloat(computed);
+            const unit = computed.replace(/^[0-9\.\-]+/, '') || 'px';
+            const newSize = (current + (delta || 8)) + unit;
+            document.documentElement.style.setProperty('--viking-desc-size', newSize);
+            updateVikingTexts();
+          };
+
+          window.resetVikingDescriptionSize = function() {
+            document.documentElement.style.setProperty('--viking-desc-size', '28px');
+            updateVikingTexts();
+          };
         });
       </script>
 
