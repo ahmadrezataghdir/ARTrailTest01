@@ -110,6 +110,9 @@
 
   <img id="congratsOverlay" class="overlay-image" src="./Assets/Token/Token02.png">
   <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
+  <!-- Sound assets for tokens/overlays -->
+  <audio id="SoundToken01" src="./Assets/Voices/SoundToken01.wav" preload="auto"></audio>
+  <audio id="SoundToken02" src="./Assets/Voices/SoundToken02.wav" preload="auto"></audio>
   <img id="riverheadOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/Riverhead.png">
   <img id="bullringOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/BullRingUrchins.png">
 
@@ -257,6 +260,12 @@
           const el = document.getElementById(id);
           if (!el) return;
           el.style.display = 'block';
+          // Play SoundToken02 (if available)
+          const audio2 = document.getElementById('SoundToken02');
+          if (audio2 && typeof audio2.play === 'function') {
+            try { audio2.currentTime = 0; } catch (e) {}
+            audio2.play().catch(err => console.warn('SoundToken02 play error', err));
+          }
           overlayImagePersistent = true;
           // disable markers so camera won't recognize them anymore
           disableAllMarkers();
@@ -301,10 +310,11 @@
               window._previousMarkerDescription = null;
             }
 
-            // Play SoundToken01 (if present)
-            const soundEntity = document.querySelector('#SoundToken01');
-            if (soundEntity && soundEntity.components && soundEntity.components.sound) {
-              soundEntity.components.sound.playSound();
+            // Play SoundToken01 (if present) using the <audio> element
+            const audio1 = document.getElementById('SoundToken01');
+            if (audio1 && typeof audio1.play === 'function') {
+              try { audio1.currentTime = 0; } catch (e) {}
+              audio1.play().catch(err => console.warn('SoundToken01 play error', err));
             }
 
             // Map videoID to suffix used in TokenTitle/TokenDescription IDs
