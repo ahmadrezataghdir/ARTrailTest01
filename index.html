@@ -254,6 +254,21 @@
             const tokenOverlay = document.getElementById('tokenOverlay');
             tokenOverlay.style.display = 'block';
 
+            // If a marker Title/Description (titleElement/descriptionElement) is present, hide them temporarily
+            // Store references globally so markerLost can restore them immediately
+            if (titleElement) {
+              window._previousMarkerTitle = titleElement;
+              titleElement.style.display = 'none';
+            } else {
+              window._previousMarkerTitle = null;
+            }
+            if (descriptionElement) {
+              window._previousMarkerDescription = descriptionElement;
+              descriptionElement.style.display = 'none';
+            } else {
+              window._previousMarkerDescription = null;
+            }
+
             // Play SoundToken01 (if present)
             const soundEntity = document.querySelector('#SoundToken01');
             if (soundEntity && soundEntity.components && soundEntity.components.sound) {
@@ -276,14 +291,23 @@
             if (titleEl) titleEl.style.display = 'block';
             if (descEl) descEl.style.display = 'block';
 
-            // Hide token and texts after 5 seconds
-            setTimeout(() => {
+            // Hide token and texts after 5 seconds and restore previous title/description if any
+            const tokenHideTimer = setTimeout(() => {
               tokenOverlay.style.display = 'none';
               if (titleEl) titleEl.style.display = 'none';
               if (descEl) descEl.style.display = 'none';
+
+              // Restore previous marker Title/Description if they existed
+              if (window._previousMarkerTitle) window._previousMarkerTitle.style.display = 'block';
+              if (window._previousMarkerDescription) window._previousMarkerDescription.style.display = 'block';
+              // clear stored references
+              window._previousMarkerTitle = null;
+              window._previousMarkerDescription = null;
             }, 5000);
 
             if (videoID && tokenStates[videoID]) tokenStates[videoID].shown = true;
+            // store timer on tokenStates so markerLost can clear it and restore UI immediately
+            if (videoID) tokenStates[videoID].hideTimer = tokenHideTimer;
           } else {
             const overlay = document.getElementById('congratsOverlay');
             overlay.style.display = 'block';
@@ -409,6 +433,15 @@
             const congrats = document.getElementById('congratsOverlay');
             if (congrats) congrats.style.display = 'none';
 
+            // Clear any pending hide timers for tokens and reset tokenStates
+            Object.keys(tokenStates).forEach(k => {
+              if (tokenStates[k].hideTimer) {
+                clearTimeout(tokenStates[k].hideTimer);
+                delete tokenStates[k].hideTimer;
+              }
+              tokenStates[k].shown = false;
+            });
+
             // Hide all TokenTitle/Description elements if present
             ['Suffragette','Sweep','LongshipArrival','WhiteGift','EdwardWatkins'].forEach(suffix => {
               const t = document.getElementById('TokenTitle' + suffix);
@@ -416,6 +449,16 @@
               if (t) t.style.display = 'none';
               if (d) d.style.display = 'none';
             });
+
+            // Restore any previously hidden marker Title/Description immediately
+            if (window._previousMarkerTitle) {
+              window._previousMarkerTitle.style.display = 'block';
+              window._previousMarkerTitle = null;
+            }
+            if (window._previousMarkerDescription) {
+              window._previousMarkerDescription.style.display = 'block';
+              window._previousMarkerDescription = null;
+            }
           });
         }
 
