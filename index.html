@@ -93,6 +93,22 @@
   <img id="riverheadOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/Riverhead.png">
   <img id="bullringOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/BullRingUrchins.png">
 
+  <!-- Token titles and descriptions (editable directly) -->
+  <p id="TokenTitleSuffragette" class="Title" style="display:none">Suffragette Token Title</p>
+  <p id="TokenDescriptionSuffragette" class="Description" style="display:none">Suffragette token description.</p>
+
+  <p id="TokenTitleSweep" class="Title" style="display:none">Sweep Token Title</p>
+  <p id="TokenDescriptionSweep" class="Description" style="display:none">Sweep token description.</p>
+
+  <p id="TokenTitleLongshipArrival" class="Title" style="display:none">Longship Arrival Token Title</p>
+  <p id="TokenDescriptionLongshipArrival" class="Description" style="display:none">Longship Arrival token description.</p>
+
+  <p id="TokenTitleWhiteGift" class="Title" style="display:none">White Gift Token Title</p>
+  <p id="TokenDescriptionWhiteGift" class="Description" style="display:none">White Gift token description.</p>
+
+  <p id="TokenTitleEdwardWatkins" class="Title" style="display:none">Edward Watkins Token Title</p>
+  <p id="TokenDescriptionEdwardWatkins" class="Description" style="display:none">Edward Watkins token description.</p>
+
   <video id="sweepMainVideo" class="video-overlay" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm"
     preload="auto" playsinline>
 
@@ -224,34 +240,89 @@
           markersDisabled = true;
         }
 
-        function showTokenAndPlaySound(markerId) {
+  function showTokenAndPlaySound(markerId, videoID) {
           // const videoId = markerId === 'character01M' ? 'sweepMainVideo' :
           //   markerId === 'SuffragetteM' ? 'suffragetteMainVideo' :
           //     'longshipArrivalMainVideo';
 
+          // The function now expects (markerId, videoID)
+          // If videoID corresponds to an ordinary token, show token overlay + titles/descriptions
+          // Otherwise, for Viking end show congrats overlay
+          // If videoID corresponds to an ordinary token, show token overlay + titles/descriptions
+          // Otherwise, for Viking end show congrats overlay
           if (markerId !== "VikingEndM") {
             const tokenOverlay = document.getElementById('tokenOverlay');
             tokenOverlay.style.display = 'block';
 
-            // Play SoundToken01
+            // Play SoundToken01 (if present)
             const soundEntity = document.querySelector('#SoundToken01');
-            if (soundEntity && soundEntity.components.sound) {
+            if (soundEntity && soundEntity.components && soundEntity.components.sound) {
               soundEntity.components.sound.playSound();
             }
 
-            // Hide token after 5 seconds
+            // Map videoID to suffix used in TokenTitle/TokenDescription IDs
+            const suffixMap = {
+              'suffragetteMainVideo': 'Suffragette',
+              'sweepMainVideo': 'Sweep',
+              'longshipArrivalMainVideo': 'LongshipArrival',
+              'WhiteGiftVideo': 'WhiteGift',
+              'EdwardWatkinsVideo': 'EdwardWatkins'
+            };
+
+            const suffix = suffixMap[videoID] || '';
+            const titleEl = suffix ? document.getElementById('TokenTitle' + suffix) : null;
+            const descEl = suffix ? document.getElementById('TokenDescription' + suffix) : null;
+
+            if (titleEl) titleEl.style.display = 'block';
+            if (descEl) descEl.style.display = 'block';
+
+            // Hide token and texts after 5 seconds
             setTimeout(() => {
               tokenOverlay.style.display = 'none';
+              if (titleEl) titleEl.style.display = 'none';
+              if (descEl) descEl.style.display = 'none';
             }, 5000);
 
-            tokenStates[videoId].shown = true;
-          }
-
-          else {
+            if (videoID && tokenStates[videoID]) tokenStates[videoID].shown = true;
+          } else {
             const overlay = document.getElementById('congratsOverlay');
             overlay.style.display = 'block';
           }
 
+        }
+
+        // Add token title/description elements (editable directly in HTML)
+        // These are hidden by default and will be shown when the token overlay appears
+        function addTokenTextPlaceholders() {
+          const mappings = [
+            { idTitle: 'TokenTitleSuffragette', idDesc: 'TokenDescriptionSuffragette', title: 'Suffragette Token Title', desc: 'Suffragette token description.' },
+            { idTitle: 'TokenTitleSweep', idDesc: 'TokenDescriptionSweep', title: 'Sweep Token Title', desc: 'Sweep token description.' },
+            { idTitle: 'TokenTitleLongshipArrival', idDesc: 'TokenDescriptionLongshipArrival', title: 'Longship Arrival Token Title', desc: 'Longship Arrival token description.' },
+            { idTitle: 'TokenTitleWhiteGift', idDesc: 'TokenDescriptionWhiteGift', title: 'White Gift Token Title', desc: 'White Gift token description.' },
+            { idTitle: 'TokenTitleEdwardWatkins', idDesc: 'TokenDescriptionEdwardWatkins', title: 'Edward Watkins Token Title', desc: 'Edward Watkins token description.' }
+          ];
+
+          mappings.forEach(m => {
+            // Title
+            if (!document.getElementById(m.idTitle)) {
+              const t = document.createElement('p');
+              t.id = m.idTitle;
+              t.className = 'Title';
+              t.textContent = m.title; // user can edit this directly in the HTML later
+              t.style.display = 'none';
+              document.body.appendChild(t);
+            }
+
+            // Description
+            if (!document.getElementById(m.idDesc)) {
+              const d = document.createElement('p');
+              d.id = m.idDesc;
+              d.className = 'Description';
+              d.textContent = m.desc; // user can edit this directly in the HTML later
+              d.style.display = 'none';
+              document.body.appendChild(d);
+            }
+          });
         }
 
         function setupMarker(markerId, titleText, descriptionText, videoID) {
@@ -270,7 +341,10 @@
 
             // Only show token for specific videos
 
-            showTokenAndPlaySound(markerId);
+            // Ensure token text placeholders exist
+            addTokenTextPlaceholders();
+
+            showTokenAndPlaySound(markerId, videoID);
 
           });
 
@@ -329,6 +403,19 @@
               titleElement = null;
               descriptionElement = null;
             }
+            // Hide any token overlays/texts when marker lost
+            const tokenOverlay = document.getElementById('tokenOverlay');
+            if (tokenOverlay) tokenOverlay.style.display = 'none';
+            const congrats = document.getElementById('congratsOverlay');
+            if (congrats) congrats.style.display = 'none';
+
+            // Hide all TokenTitle/Description elements if present
+            ['Suffragette','Sweep','LongshipArrival','WhiteGift','EdwardWatkins'].forEach(suffix => {
+              const t = document.getElementById('TokenTitle' + suffix);
+              const d = document.getElementById('TokenDescription' + suffix);
+              if (t) t.style.display = 'none';
+              if (d) d.style.display = 'none';
+            });
           });
         }
 
