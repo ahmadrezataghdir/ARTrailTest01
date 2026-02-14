@@ -1,24 +1,16 @@
 <html>
 
 <head>
-  <meta name="apple-mobile-web-app-capable" content="yes">
   <!-- A-Frame itself -->
   <script src="https://aframe.io/releases/1.7.0/aframe.min.js"></script>
   <script src="https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
   <style>
-    /* Token title/description styling variables - edit these to change token text appearance */
-    :root {
-      --token-title-size: 40px;
-      --token-title-color: #ffffff;
-      --token-desc-size: 30px;
-      --token-desc-color: #d5d75f;
-    }
     p.Description {
       position: fixed;
       bottom: 10px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 20px;
+      font-size: 18px;
       color: rgb(255, 255, 255);
       background-color: rgba(0, 0, 0, 0.189);
       padding: 10px;
@@ -30,26 +22,12 @@
       word-wrap: break-word;
 
     }
-
-    /* Specific classes for token text so they can have independent styles */
-    .TokenTitleText {
-      font-size: var(--token-title-size);
-      color: var(--token-title-color);
-      text-align: center;
-    }
-
-    .TokenDescriptionText {
-      font-size: var(--token-desc-size);
-      color: var(--token-desc-color);
-      text-align: center;
-    }
-
     p.Title {
       position: fixed;
       top: 10px;
       left: 50%;
       transform: translateX(-50%);
-      font-size: 30px;
+      font-size: 24px;
       color: rgb(255, 255, 255);
       background-color: rgba(0, 0, 0, 0.189);
       padding: 10px;
@@ -59,7 +37,6 @@
       width: 80%;
       text-align: center;
     }
-
     .overlay-image {
       position: fixed;
       top: 50%;
@@ -70,819 +47,216 @@
       z-index: 2000;
       display: none;
     }
-
-    .token-image {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 95%;
-      max-width: 800px;
-      z-index: 2000;
-      display: none;
-    }
-
-    .photo-overlay {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 95%;
-      max-width: 800px;
-      z-index: 2000;
-      display: none;
-    }
-
-    .video-overlay {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 100%;
-      max-width: 800px;
-      z-index: 2000;
-      display: none;
-    }
-    /* Viking end token title/description variables and styles */
-    :root {
-      --viking-title-size: 48px; /* default size for viking title */
-      --viking-title-color: #ffffff; /* default color for viking title */
-      --viking-desc-size: 28px; /* default size for viking description */
-      --viking-desc-color: #d5d75f; /* default color for viking description */
-    }
-
-    .VikingTitleText {
-      font-size: var(--viking-title-size);
-      color: var(--viking-title-color);
-      text-align: center;
-    }
-
-    .VikingDescriptionText {
-      font-size: var(--viking-desc-size);
-      color: var(--viking-desc-color);
-      text-align: center;
-    }
-    /* Simple spinner for buffered loading */
-    .video-spinner {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      z-index: 2100;
-      width: 48px;
-      height: 48px;
-      border: 6px solid rgba(255,255,255,0.2);
-      border-top-color: rgba(255,255,255,0.9);
-      border-radius: 50%;
-      display: none;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: translate(-50%, -50%) rotate(360deg); }
-    }
   </style>
 </head>
 
 <body style="margin: 0px; overflow: hidden">
-
-  <img id="congratsOverlay" class="overlay-image" src="./Assets/Token/Token02.png">
-  <img id="tokenOverlay" class="token-image" src="./Assets/Token/Token01.png">
-  <!-- Sound assets for tokens/overlays -->
-  <audio id="SoundToken01" src="./Assets/Voices/SoundToken01.wav" preload="auto"></audio>
-  <audio id="SoundToken02" src="./Assets/Voices/SoundToken02.wav" preload="auto"></audio>
-  <img id="riverheadOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/Riverhead.png">
-  <img id="bullringOverlay" class="photo-overlay" src="./Assets/LandscapePhoto/BullRingUrchins.png">
-
-  <!-- Token titles and descriptions (editable directly) -->
-  <p id="TokenTitleSuffragette" class="Title TokenTitleText" style="display:none">BOOP!</p>
-  <p id="TokenDescriptionSuffragette" class="Description TokenDescriptionText" style="display:none">+6 COINS</p>
-
-  <p id="TokenTitleSweep" class="Title TokenTitleText" style="display:none">YOU FOUND IT</p>
-  <p id="TokenDescriptionSweep" class="Description TokenDescriptionText" style="display:none">+2 COINS</p>
-
-  <p id="TokenTitleLongshipArrival" class="Title TokenTitleText" style="display:none">TOKEN UNLOCKED!</p>
-  <p id="TokenDescriptionLongshipArrival" class="Description TokenDescriptionText" style="display:none">+1 COINS</p>
-
-  <p id="TokenTitleWhiteGift" class="Title TokenTitleText" style="display:none">YOU DID IT</p>
-  <p id="TokenDescriptionWhiteGift" class="Description TokenDescriptionText" style="display:none">+5 COINS</p>
-
-  <p id="TokenTitleEdwardWatkins" class="Title TokenTitleText" style="display:none">WELL DONE</p>
-  <p id="TokenDescriptionEdwardWatkins" class="Description TokenDescriptionText" style="display:none">+4 COINS</p>
-
-  <!-- Viking end title and description: shown whenever any .overlay-image becomes visible -->
-  <p id="TokenTitlevikingEnd" class="Title VikingTitleText" style="display:none">The Trail Ends Here</p>
-  <p id="TokenDescriptionvikingEnd" class="Description VikingDescriptionText" style="display:none">Thank you for taking part in the trail.</p>
-
-  <video id="sweepMainVideo" class="video-overlay" src="./Assets/CharactersAnimations/01 Sweep/SweepMain.webm"
-    preload="metadata" playsinline>
-
-  </video>
-  <video id="suffragetteMainVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/02 Suffragette/SuffragetteMain.webm" preload="metadata" playsinline>
-  </video>
-
-  <video id="longshipArrivalMainVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/04 LongshipArrival/LongshipArrivalMain.webm" preload="metadata" playsinline>
-  </video>
-
-  <video id="vikingEndMainVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/05 VikingEnd/VikingEndMain.webm" preload="metadata" playsinline>
-  </video>
-
-  <video id="WhiteGiftVideo" class="video-overlay" src="./Assets/CharactersAnimations/08 WhiteGift/WhitGiftMain.webm"
-    preload="metadata" playsinline>
-  </video>
-
-  <video id="EdwardWatkinsVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/09 EdwardWatkins/EdwardWatkinsMain.webm" preload="metadata" playsinline>
-  </video>
-
-  <video id="longshipTextVideo" class="video-overlay"
-    src="./Assets/CharactersAnimations/03 LongshipText/LongshipTextMain.webm" preload="metadata" playsinline>
-  </video>
-
-  <!-- Spinner shown while waiting for video buffering on slow networks -->
-  <div id="videoSpinner" class="video-spinner" aria-hidden="true"></div>
-
-      <a-scene embedded arjs
-        renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
-        <!-- <a-marker preset="hiro" smooth="true"> -->
-
-        <!-- <a-assets> -->
-
-        <!-- </a-assets> -->
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="character01M"
-          type="pattern" url="./Assets/Markers/character01M.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="SuffragetteM"
-          type="pattern" url="./Assets/Markers/02 Suffragette Marker/SuffragetteM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="LongshipArrivalM"
-          type="pattern" url="./Assets/Markers/04 LongshipArrival Marker/LongshipArrivalM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="VikingEndM"
-          type="pattern" url="./Assets/Markers/05%20VikingEnd%20Marker/VikingEndM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="RiverheadM"
-          type="pattern" url="./Assets/Markers/06 Riverhead Marker/RiverheadM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="BullRingM"
-          type="pattern" url="./Assets/Markers/07 BullRing Marker/BullRingM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="LongshipTextM"
-          type="pattern" url="./Assets/Markers/03 LongshipText Marker/LongshipArrivalTextM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="WhiteGiftM"
-          type="pattern" url="./Assets/Markers/08 WhiteGift Marker/WhiteGiftM.patt">
-
-        </a-marker>
-
-        <a-marker smooth="true" smoothCount="10" smoothTolerance="0.01" smoothThreshold="5" id="EdwardWatkinsM"
-          type="pattern" url="./Assets/Markers/09 EdwardWatkins Marker/EdwardWatkinsM.patt">
-
-        </a-marker>
-
-        <a-entity camera>
-        </a-entity>
-      </a-scene>
-
-
-      <script>
-
-        let titleElement = null;
-        let descriptionElement = null;
-        let currentlyPlayingEntity = null;
-        let allMarkersDetected = false;
-        let overlayTimer = null;
-        let lastDetectedMarker = null;
-        let tokenShown = false; // Track if token has been shown
-        let soundPlayed = false; // Track if sound has been played
-        let videoStarted = false; // Track if video has been started
-
-        // Add these variables at the top of your script section
-        let currentPlayingVideo = null;
-        const videoStates = {
-          'sweepMainVideo': { played: false, completed: false },
-          'suffragetteMainVideo': { played: false, completed: false },
-          'longshipArrivalMainVideo': { played: false, completed: false },
-          'vikingEndMainVideo': { played: false, completed: false },
-          'longshipTextVideo': { played: false, completed: false },
-          'WhiteGiftVideo': { played: false, completed: false },
-          'EdwardWatkinsVideo': { played: false, completed: false }
-        };
-
-        const tokenStates = {
-          'sweepMainVideo': { shown: false },
-          'suffragetteMainVideo': { shown: false },
-          'longshipArrivalMainVideo': { shown: false },
-          'WhiteGiftVideo': { shown: false },
-          'EdwardWatkinsVideo': { shown: false }
-        };
-
-        // Add this variable at the top of your script section
-        let markersDisabled = false;
-        // When an overlay-image is shown and should remain on screen forever
-        let overlayImagePersistent = false;
-
-        // Coin values for each marker and tracking of which markers were found
-        const coinValues = {
-          'character01M': 2,
-          'SuffragetteM': 6,
-          'LongshipArrivalM': 1,
-          'VikingEndM': 8,
-          'RiverheadM': 7,
-          'BullRingM': 3,
-          'WhiteGiftM': 5,
-          'EdwardWatkinsM': 4
-        };
-
-        const foundFlags = {
-          'character01M': false,
-          'SuffragetteM': false,
-          'LongshipArrivalM': false,
-          'VikingEndM': false,
-          'RiverheadM': false,
-          'BullRingM': false,
-          'WhiteGiftM': false,
-          'EdwardWatkinsM': false
-        };
-
-        // Calculate total coins from markers that have been found
-        function calculateTotalCoins() {
-          let total = 0;
-          Object.keys(foundFlags).forEach(k => {
-            if (foundFlags[k]) total += (coinValues[k] || 0);
-          });
-          return total;
-        }
-
-        // Helper to show overlay-image elements persistently and disable markers
-        function showOverlayImagePersistent(id) {
-          const el = document.getElementById(id);
-          if (!el) return;
-          el.style.display = 'block';
-          // Play SoundToken02 (if available)
-          const audio2 = document.getElementById('SoundToken02');
-          if (audio2 && typeof audio2.play === 'function') {
-            try { audio2.currentTime = 0; } catch (e) {}
-            audio2.play().catch(err => console.warn('SoundToken02 play error', err));
-          }
-          overlayImagePersistent = true;
-          // disable markers so camera won't recognize them anymore
-          disableAllMarkers();
-        }
-
-        // Spinner helpers and buffered play logic
-        function showSpinner() {
-          const s = document.getElementById('videoSpinner');
-          if (s) s.style.display = 'block';
-        }
-
-        function hideSpinner() {
-          const s = document.getElementById('videoSpinner');
-          if (s) s.style.display = 'none';
-        }
-
-        // Try to ensure a small buffer or canplaythrough before playing to reduce stutter on slow connections
-        function ensureBufferedAndPlay(video) {
-          return new Promise(resolve => {
-            if (!video) return resolve();
-            // If video already ready to play through, just play
-            if (video.readyState >= 4) {
-              video.play().catch(()=>{}).then(resolve);
-              return;
-            }
-
-            let resolved = false;
-            function _resolve() {
-              if (resolved) return; resolved = true;
-              hideSpinner();
-              video.play().catch(()=>{}).then(() => resolve());
-            }
-
-            // show spinner while waiting
-            showSpinner();
-
-            // If canplaythrough fires, play immediately
-            const onCanPlayThrough = () => { cleanup(); _resolve(); };
-            const onCanPlay = () => {
-              // Try to start when we have enough buffered (first 0.5s)
-              const buffered = video.buffered;
-              if (buffered && buffered.length) {
-                const bufferedEnd = buffered.end(buffered.length - 1);
-                if (bufferedEnd - video.currentTime >= 0.5) { cleanup(); _resolve(); }
-              }
-            };
-            const onError = () => { cleanup(); hideSpinner(); resolve(); };
-
-            function cleanup() {
-              video.removeEventListener('canplaythrough', onCanPlayThrough);
-              video.removeEventListener('canplay', onCanPlay);
-              video.removeEventListener('error', onError);
-            }
-
-            video.addEventListener('canplaythrough', onCanPlayThrough);
-            video.addEventListener('canplay', onCanPlay);
-            video.addEventListener('error', onError);
-
-            // Kick off loading if not already
-            try { video.load(); } catch (e) {}
-
-            // Fallback timeout: after 5s try to play anyway
-            setTimeout(() => { if (!resolved) { cleanup(); _resolve(); } }, 5000);
-          });
-        }
-
-        // Add this function to disable all markers
-        function disableAllMarkers() {
-          const markers = document.querySelectorAll('a-marker');
-          markers.forEach(marker => {
-            marker.setAttribute('visible', 'false');
-            marker.removeAttribute('emitevents');
-          });
-          markersDisabled = true;
-        }
-
-  function showTokenAndPlaySound(markerId, videoID) {
-          // const videoId = markerId === 'character01M' ? 'sweepMainVideo' :
-          //   markerId === 'SuffragetteM' ? 'suffragetteMainVideo' :
-          //     'longshipArrivalMainVideo';
-
-          // The function now expects (markerId, videoID)
-          // If videoID corresponds to an ordinary token, show token overlay + titles/descriptions
-          // Otherwise, for Viking end show congrats overlay
-          // If videoID corresponds to an ordinary token, show token overlay + titles/descriptions
-          // Otherwise, for Viking end show congrats overlay
-          if (markerId !== "VikingEndM") {
-            const tokenOverlay = document.getElementById('tokenOverlay');
-            tokenOverlay.style.display = 'block';
-
-            // If a marker Title/Description (titleElement/descriptionElement) is present, hide them temporarily
-            // Store references globally so markerLost can restore them immediately
-            if (titleElement) {
-              window._previousMarkerTitle = titleElement;
-              titleElement.style.display = 'none';
-            } else {
-              window._previousMarkerTitle = null;
-            }
-            if (descriptionElement) {
-              window._previousMarkerDescription = descriptionElement;
-              descriptionElement.style.display = 'none';
-            } else {
-              window._previousMarkerDescription = null;
-            }
-
-            // Play SoundToken01 (if present) using the <audio> element
-            const audio1 = document.getElementById('SoundToken01');
-            if (audio1 && typeof audio1.play === 'function') {
-              try { audio1.currentTime = 0; } catch (e) {}
-              audio1.play().catch(err => console.warn('SoundToken01 play error', err));
-            }
-
-            // Map videoID to suffix used in TokenTitle/TokenDescription IDs
-            const suffixMap = {
-              'suffragetteMainVideo': 'Suffragette',
-              'sweepMainVideo': 'Sweep',
-              'longshipArrivalMainVideo': 'LongshipArrival',
-              'WhiteGiftVideo': 'WhiteGift',
-              'EdwardWatkinsVideo': 'EdwardWatkins'
-            };
-
-            const suffix = suffixMap[videoID] || '';
-            const titleEl = suffix ? document.getElementById('TokenTitle' + suffix) : null;
-            const descEl = suffix ? document.getElementById('TokenDescription' + suffix) : null;
-
-            if (titleEl) titleEl.style.display = 'block';
-            if (descEl) descEl.style.display = 'block';
-
-            // Hide token and texts after 5 seconds and restore previous title/description if any
-            const tokenHideTimer = setTimeout(() => {
-              tokenOverlay.style.display = 'none';
-              if (titleEl) titleEl.style.display = 'none';
-              if (descEl) descEl.style.display = 'none';
-
-              // Restore previous marker Title/Description if they existed
-              if (window._previousMarkerTitle) window._previousMarkerTitle.style.display = 'block';
-              if (window._previousMarkerDescription) window._previousMarkerDescription.style.display = 'block';
-              // clear stored references
-              window._previousMarkerTitle = null;
-              window._previousMarkerDescription = null;
-            }, 5000);
-
-            if (videoID && tokenStates[videoID]) tokenStates[videoID].shown = true;
-            // store timer on tokenStates so markerLost can clear it and restore UI immediately
-            if (videoID) tokenStates[videoID].hideTimer = tokenHideTimer;
-          } else {
-            // Show congrats overlay persistently and disable markers
-            showOverlayImagePersistent('congratsOverlay');
-          }
-
-        }
-
-        // Add token title/description elements (editable directly in HTML)
-        // These are hidden by default and will be shown when the token overlay appears
-        function addTokenTextPlaceholders() {
-          const mappings = [
-            { idTitle: 'TokenTitleSuffragette', idDesc: 'TokenDescriptionSuffragette', title: 'BOOP!', desc: '+6 COINS' },
-            { idTitle: 'TokenTitleSweep', idDesc: 'TokenDescriptionSweep', title: 'YOU FOUND IT', desc: '+2 COINS' },
-            { idTitle: 'TokenTitleLongshipArrival', idDesc: 'TokenDescriptionLongshipArrival', title: 'TOKEN UNLOCKED!', desc: '+1 COINS' },
-            { idTitle: 'TokenTitleWhiteGift', idDesc: 'TokenDescriptionWhiteGift', title: 'YOU DID IT', desc: '+5 COINS' },
-            { idTitle: 'TokenTitleEdwardWatkins', idDesc: 'TokenDescriptionEdwardWatkins', title: 'WELL DONE!', desc: '+4 COINS' }
-          ];
-
-          mappings.forEach(m => {
-            // Title
-            if (!document.getElementById(m.idTitle)) {
-              const t = document.createElement('p');
-              t.id = m.idTitle;
-              t.className = 'Title TokenTitleText';
-              t.textContent = m.title; // user can edit this directly in the HTML later
-              t.style.display = 'none';
-              document.body.appendChild(t);
-            }
-
-            // Description
-            if (!document.getElementById(m.idDesc)) {
-              const d = document.createElement('p');
-              d.id = m.idDesc;
-              d.className = 'Description TokenDescriptionText';
-              d.textContent = m.desc; // user can edit this directly in the HTML later
-              d.style.display = 'none';
-              document.body.appendChild(d);
-            }
-          });
-        }
-
-        function setupMarker(markerId, titleText, descriptionText, videoID) {
-          const marker = document.querySelector(`#${markerId}`);
-          const video = document.querySelector(`#${videoID}`);
-
-          document.addEventListener("DOMContentLoaded", () => {
-            const video = document.querySelector(`#${videoID}`);
-            video.pause(); // make sure it doesn't run
-          });
-          // Add ended event listener to track completion
-          video.addEventListener('ended', () => {
-            videoStates[videoID].completed = true;
-            const overlay = document.getElementById(`${videoID}`);
-            overlay.style.display = 'none';
-
-            // Only show token for specific videos
-
-            // Ensure token text placeholders exist
-            addTokenTextPlaceholders();
-
-            showTokenAndPlaySound(markerId, videoID);
-
-          });
-
-          marker.addEventListener('markerFound', () => {
-
-            console.log(`Marker ${markerId} found`);
-
-            if (markersDisabled) return; // Skip if markers are disabled
-
-            // Mark this marker as found for scoring
-            if (foundFlags.hasOwnProperty(markerId)) {
-              foundFlags[markerId] = true;
-            }
-
-            // Special handling for vikingEndMainVideo
-            if (videoID === 'vikingEndMainVideo') {
-
-              disableAllMarkers();
-            }
-
-            if (!titleElement && !descriptionElement) {
-              titleElement = document.createElement('p');
-              titleElement.className = "Title";
-              titleElement.textContent = titleText;
-              document.body.appendChild(titleElement);
-
-              descriptionElement = document.createElement('p');
-              descriptionElement.className = "Description";
-              descriptionElement.textContent = descriptionText;
-              document.body.appendChild(descriptionElement);
-              
-              // Handle video playback
-              if (!videoStates[videoID].completed) {
-                // Stop current playing video if any
-                if (currentPlayingVideo && currentPlayingVideo !== video) {
-                  const overlay = document.getElementById(`${currentPlayingVideo.id}`);
-                  overlay.style.display = 'none';
-                  currentPlayingVideo.pause();
-                  console.log(`Paused video: ${currentPlayingVideo.id}`);
-                }
-
-                // Play new video using buffered-play helper to reduce stutter
-                (async () => {
-                  const overlay = document.getElementById(`${videoID}`);
-                  overlay.style.display = 'block';
-                  await ensureBufferedAndPlay(video);
-                })();
+  <a-scene embedded arjs
+   renderer="antialias: true; logarithmicDepthBuffer: true; colorManagement: true; sortObjects: true;">
+    <!-- <a-marker preset="hiro" smooth="true"> -->
+
+    <a-marker smooth="true" id="helmet-marker" type="pattern"
+      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-helmet.patt?v=1745929731528">
+
+      <!-- <a-text
+        value="Has protected Grim in many invasions and battles as a young Warrior.  When Grim settled to build the village, he added the symbol of the fish, showing his new status as a fisherman.
+        Grim's helmet was made of iron and was stolen by the Saxon Alfred who then lost it.  Rumours say it could be buried deep under the marshland of Grim's Village"      
+        position="-1 0 -2"
+        rotation="-90 0 0"
+        scale="0.5 0.5 0.5"
+        color="black">
+      </a-text> -->
+
+      <a-entity
+        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsHelmet02.glb?v=1746903397395"
+        scale="2.5 2.5 2.5" position="0.5 1 0.5"
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
+        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundHelmet.mp3?v=1746961825461); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+      </a-entity>
+
+    </a-marker>
+
+    <a-marker id="patternHornMarker" smooth="true" type="pattern"
+      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/horn-marker.patt?v=1745922699965">
+      <a-entity gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsHornGLB.glb?v=1746953526195"
+        scale="4 4 4" position="0 1 0"
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
+        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundHorn.mp3?v=1746961833345); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+      </a-entity>
+    </a-marker>
+
+    <a-marker id="patternAxeMarker" smooth="true" type="pattern"
+      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-Axe%20Marker%20F02.patt?v=1746802498653">
+      <a-entity
+        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectAxe02.glb?v=1746924357059"
+        scale="3.5 3.5 3.5" position="0 1 0.2"
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
+        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundAxe.mp3?v=1746961806895); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+      </a-entity>
+    </a-marker>
+
+    <a-marker id="patternBowlMarker" smooth="true" type="pattern"
+      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-Bowl%20Marker%20F02.patt?v=1747139127462">
+      <a-entity
+        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectBowl02.glb?v=1746955382427"
+        scale="4 4 4" position="0 1 0.2"
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
+        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundBowl.mp3?v=1746961819838); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+      </a-entity>
+    </a-marker>
+
+    <a-marker id="patternSpoonMarker" smooth="true" type="pattern"
+      url="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/pattern-Spoon%20Marker%20F02.patt?v=1747139073282">
+      <a-entity
+        gltf-model="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/5VikingsObjectsSpoon01.glb?v=1746876397296"
+        scale="5 5 5" position="0 1 0.2"
+        animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
+        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundSpoon.mp3?v=1746961813744); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+      </a-entity>
+    </a-marker>
+
+    <a-entity camera> </a-entity>
+  </a-scene>
+
+  <img id="congratsOverlay" class="overlay-image" 
+       src="https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOCongratsPage0101PNG.png?v=1747019968838">
+  
+<script>
+  let titleElement = null;
+  let descriptionElement = null;
+  let currentlyPlayingEntity = null;
+  let allMarkersDetected = false;
+  let overlayTimer = null;
+  let lastDetectedMarker = null; // Track the last marker detected
+  const congratsSound = new Audio('https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOSoundEffects02.mp3?v=1747015536051');
+  
+  // Track which sounds have been played
+  const soundPlayed = {
+    'helmet-marker': false,
+    'patternHornMarker': false,
+    'patternAxeMarker': false,
+    'patternBowlMarker': false,
+    'patternSpoonMarker': false
+  };
+  
+  function checkAllMarkersDetected() {
+    const allDetected = Object.values(soundPlayed).every(played => played === true);
     
-                currentPlayingVideo = video;
-                videoStates[videoID].played = true;
-              }
+    if (allDetected && !allMarkersDetected) {
+      allMarkersDetected = true;
+
+      // Set delay based on last detected marker
+      let delay = 4000; // default 4s fallback
+      switch (lastDetectedMarker) {
+        case 'helmet-marker':
+          delay = 32000; // 32 seconds
+          break;
+        case 'patternHornMarker':
+          delay = 40000; // 40 seconds
+          break;
+        case 'patternAxeMarker':
+          delay = 44000; // 44 seconds
+          break;
+        case 'patternBowlMarker':
+          delay = 6000;  // 6 seconds
+          break;
+        case 'patternSpoonMarker':
+          delay = 28000; // 28 seconds
+          break;
+      }
+      console.log(`All markers detected, last marker: ${lastDetectedMarker}, waiting ${delay/1000}s before showing overlay.`);
+      
+      setTimeout(() => {
+        const overlay = document.getElementById('congratsOverlay');
+        overlay.style.display = 'block';
+        congratsSound.play();
+        
+        // Hide overlay after 15 seconds
+        setTimeout(() => {
+          overlay.style.display = 'none';
+        }, 15000);
+      }, delay);
+    }
+  }
+  
+  function setupMarker(markerId, titleText, descriptionText) {
+    console.log("setupMarker called with markerId:", markerId);
+    
+    const marker = document.querySelector(`#${markerId}`);
+    marker.addEventListener('markerFound', () => {
+      if (!titleElement && !descriptionElement) {
+        titleElement = document.createElement('p');
+        titleElement.className = "Title";
+        titleElement.textContent = titleText;
+        document.body.appendChild(titleElement);
+
+        descriptionElement = document.createElement('p');
+        descriptionElement.className = "Description";
+        descriptionElement.textContent = descriptionText;
+        document.body.appendChild(descriptionElement);
+
+        // Get the entity inside the marker
+        const entity = marker.querySelector('a-entity');
+        if (entity && entity.components.sound) {
+          // Only play if sound hasn't been played before
+          if (!soundPlayed[markerId]) {
+            // Stop current sound if any
+            if (currentlyPlayingEntity && currentlyPlayingEntity !== entity) {
+              currentlyPlayingEntity.components.sound.stopSound();
             }
-          });
-
-          marker.addEventListener('markerLost', () => {
-
-            if (titleElement && descriptionElement) {
-              titleElement.remove();
-              descriptionElement.remove();
-              titleElement = null;
-              descriptionElement = null;
-            }
-            // Hide any token overlays/texts when marker lost
-            const tokenOverlay = document.getElementById('tokenOverlay');
-            if (tokenOverlay) tokenOverlay.style.display = 'none';
-            const congrats = document.getElementById('congratsOverlay');
-            // Do not hide persistent overlay-images
-            if (congrats && !overlayImagePersistent) congrats.style.display = 'none';
-
-            // Clear any pending hide timers for tokens and reset tokenStates
-            Object.keys(tokenStates).forEach(k => {
-              if (tokenStates[k].hideTimer) {
-                clearTimeout(tokenStates[k].hideTimer);
-                delete tokenStates[k].hideTimer;
-              }
-              tokenStates[k].shown = false;
-            });
-
-            // Hide all TokenTitle/Description elements if present
-            ['Suffragette','Sweep','LongshipArrival','WhiteGift','EdwardWatkins'].forEach(suffix => {
-              const t = document.getElementById('TokenTitle' + suffix);
-              const d = document.getElementById('TokenDescription' + suffix);
-              if (t) t.style.display = 'none';
-              if (d) d.style.display = 'none';
-            });
-
-            // Restore any previously hidden marker Title/Description immediately
-            if (window._previousMarkerTitle) {
-              window._previousMarkerTitle.style.display = 'block';
-              window._previousMarkerTitle = null;
-            }
-            if (window._previousMarkerDescription) {
-              window._previousMarkerDescription.style.display = 'block';
-              window._previousMarkerDescription = null;
-            }
-          });
+            // Play sound and mark as played
+            entity.components.sound.playSound();
+            currentlyPlayingEntity = entity;
+            soundPlayed[markerId] = true;
+            lastDetectedMarker = markerId; // Update last detected marker
+          }
         }
+      }
+      
+      checkAllMarkersDetected();
+    });
 
-        // Setup markers with their respective titles and descriptions
-        setupMarker(
-          'character01M',
-          "Sweep", // Title - replace with your desired title
-          "", // Description - replace with your desired description
-          'sweepMainVideo'
-        );
+    marker.addEventListener('markerLost', () => {
+      if (titleElement && descriptionElement) {
+        titleElement.remove();
+        descriptionElement.remove();
+        titleElement = null;
+        descriptionElement = null;
+      }
+    });
+  }
 
-        setupMarker(
-          'SuffragetteM',
-          "Suffragette",
-          "",
-          'suffragetteMainVideo'
-        );
+  // Setup markers with their respective titles and descriptions
+  setupMarker(
+    'helmet-marker',
+    "Grim's Helmet",
+    "Has protected Grim in many invasions and battles as a young Warrior. When Grim settled to build the village, he added the symbol of the fish, showing his new status as a fisherman. Grim's helmet was made of iron and was stolen by the Saxon Alfred who then lost it. Rumours say it could be buried deep under the marshland of Grim's Village"
+  );
 
-        setupMarker(
-          'LongshipArrivalM',
-          "Longship Arrival",
-          "",
-          'longshipArrivalMainVideo'
-        );
+  setupMarker(
+    'patternHornMarker',
+    "The Yarl's Warhorn",
+    "The Yarl's Warhorn is used to raise the alarm or in today's Viking village is used mostly to call everyone together. The Yarl's war horn is made from the horn of Branston, his great bull and can be heard for miles when he blows it.  The villagers also use drinking horns as cups, drinking ale, cider and mead. Did you know, real Vikings did not have horns on their helmets!  That was made up in the 1800s by artists and costume designers."
+  );
 
-        setupMarker(
-          'VikingEndM',
-          "Viking End",
-          "",
-          'vikingEndMainVideo'
-        );
+  setupMarker(
+    'patternAxeMarker',
+    "The Kolga",
+    "The Kolga, Havelok's battle axe.  Havelok gets in trouble using it to carve wood which can make axe blades blunt but not the Kolga. The original Kolga was made by Uffbert the Blacksmith. The King, Havelok's dad, commanded Uffbert to make a special axe when Havelok began his warrior training.  Kolga means cool one. The blade shows the dragon longship carrying the special ore that made the Kolga back from a raid. A giant wave hits the longship and the Borson's brother, Amond is swept overboard."
+  );
 
-        setupMarker(
-          'WhiteGiftM',
-          "WhiteGift",
-          "",
-          'WhiteGiftVideo'
-        );
+  setupMarker(
+    'patternBowlMarker',
+    "Havelok's Bowl",
+    ""
+  );
 
-        setupMarker(
-          'EdwardWatkinsM',
-          "Edward Watkins",
-          "",
-          'EdwardWatkinsVideo'
-        );
-
-        // Replace the RiverheadM and BullRingM setupMarker calls with this custom setup
-  const riverheadMarker = document.querySelector('#RiverheadM');
-        riverheadMarker.addEventListener('markerFound', () => {
-          if (markersDisabled) return;
-          // Show photo overlay
-          const overlay = document.getElementById('riverheadOverlay');
-          overlay.style.display = 'block';
-
-          // mark found
-          foundFlags['RiverheadM'] = true;
-
-          // Create Title and Description if not already present
-          if (!titleElement && !descriptionElement) {
-            titleElement = document.createElement('p');
-            titleElement.className = 'Title';
-            titleElement.textContent = 'Riverhead';
-            document.body.appendChild(titleElement);
-
-            descriptionElement = document.createElement('p');
-            descriptionElement.className = 'Description';
-            descriptionElement.textContent = 'A view of the Riverhead landscape.';
-            document.body.appendChild(descriptionElement);
-          }
-
-          // (No token overlay for Riverhead)
-        });
-
-        riverheadMarker.addEventListener('markerLost', () => {
-          const overlay = document.getElementById('riverheadOverlay');
-          overlay.style.display = 'none';
-          // remove title/description
-          if (titleElement && descriptionElement) {
-            titleElement.remove();
-            descriptionElement.remove();
-            titleElement = null;
-            descriptionElement = null;
-          }
-          // nothing to clear (no token timers)
-        });
-
-  const bullringMarker = document.querySelector('#BullRingM');
-        bullringMarker.addEventListener('markerFound', () => {
-          if (markersDisabled) return;
-          const overlay = document.getElementById('bullringOverlay');
-          overlay.style.display = 'block';
-
-          // mark found
-          foundFlags['BullRingM'] = true;
-
-          if (!titleElement && !descriptionElement) {
-            titleElement = document.createElement('p');
-            titleElement.className = 'Title';
-            titleElement.textContent = 'Bull Ring';
-            document.body.appendChild(titleElement);
-
-            descriptionElement = document.createElement('p');
-            descriptionElement.className = 'Description';
-            descriptionElement.textContent = 'A historic bull ring site.';
-            document.body.appendChild(descriptionElement);
-          }
-
-          // (No token overlay for Bull Ring)
-        });
-
-        bullringMarker.addEventListener('markerLost', () => {
-          const overlay = document.getElementById('bullringOverlay');
-          overlay.style.display = 'none';
-          if (titleElement && descriptionElement) {
-            titleElement.remove();
-            descriptionElement.remove();
-            titleElement = null;
-            descriptionElement = null;
-          }
-          // nothing to clear (no token timers)
-        });
-
-        // Special setup for LongshipText with one-time video play
-        let longshipTextVideoPlayed = false;
-        const longshipTextMarker = document.querySelector('#LongshipTextM');
-        const longshipTextVideo = document.querySelector('#longshipTextVideo');
-
-        longshipTextMarker.addEventListener('markerFound', () => {
-          if (markersDisabled) return;
-          if (!longshipTextVideoPlayed) {
-            // Stop current playing video if any
-            if (currentPlayingVideo) {
-              currentPlayingVideo.pause();
-            }
-
-            (async () => {
-              await ensureBufferedAndPlay(longshipTextVideo);
-              currentPlayingVideo = longshipTextVideo;
-              videoStates['longshipTextVideo'].played = true;
-            })();
-            // mark found (Longship text acts like a discovery)
-            foundFlags['LongshipArrivalM'] = true;
-          }
-        });
-
-        longshipTextVideo.addEventListener('ended', () => {
-          videoStates['longshipTextVideo'].completed = true;
-        });
-
-        // Diagnostic: verify marker .patt files are reachable (logs 200/404)
-        document.addEventListener('DOMContentLoaded', () => {
-          const markers = document.querySelectorAll('a-marker');
-          markers.forEach(marker => {
-            const url = marker.getAttribute('url');
-            if (!url) return;
-            // Try fetching the pattern file to check availability
-            fetch(url, { method: 'GET' })
-              .then(resp => {
-                if (!resp.ok) {
-                  console.warn(`Marker pattern not reachable for #${marker.id}: ${url} (status ${resp.status})`);
-                } else {
-                  console.log(`Marker pattern OK for #${marker.id}: ${url} (status ${resp.status})`);
-                }
-              })
-              .catch(err => {
-                console.error(`Error fetching marker pattern for #${marker.id}: ${url}`, err);
-              });
-          });
-        });
-        // Observe overlay-image visibility and show/hide the viking end title/description
-        document.addEventListener('DOMContentLoaded', () => {
-          const title = document.getElementById('TokenTitlevikingEnd');
-          const desc = document.getElementById('TokenDescriptionvikingEnd');
-
-          // Helper to update visibility based on any .overlay-image being visible
-          function updateVikingTexts() {
-            const overlays = document.querySelectorAll('.overlay-image');
-            let anyVisible = false;
-            overlays.forEach(o => {
-              if (o.style.display && o.style.display !== 'none') anyVisible = true;
-              else if (window.getComputedStyle(o).display !== 'none') anyVisible = true;
-            });
-
-            if (anyVisible) {
-              if (title) title.style.display = 'block';
-              if (desc) {
-                // Update description with total coins collected
-                const total = calculateTotalCoins();
-                desc.textContent = `Total Tokens Collected: ${total} Coins`;
-                desc.style.display = 'block';
-              }
-            } else {
-              if (title && !overlayImagePersistent) title.style.display = 'none';
-              if (desc && !overlayImagePersistent) desc.style.display = 'none';
-            }
-          }
-
-          // Initial check
-          updateVikingTexts();
-
-          // Use a MutationObserver to watch for attribute changes (display style) on overlay-images
-          const observer = new MutationObserver(mutations => {
-            let changed = false;
-            mutations.forEach(m => {
-              if (m.type === 'attributes' && (m.attributeName === 'style' || m.attributeName === 'class')) changed = true;
-            });
-            if (changed) updateVikingTexts();
-          });
-
-          const overlays = document.querySelectorAll('.overlay-image');
-          overlays.forEach(o => observer.observe(o, { attributes: true, attributeFilter: ['style', 'class'] }));
-
-          // Also expose a manual call in case overlays are toggled by scripts directly
-          window.updateVikingTexts = updateVikingTexts;
-
-          // Provide runtime helpers to change viking description size
-          window.setVikingDescriptionSize = function(size) {
-            // Accept values like '32px' or numbers (treated as px)
-            const val = typeof size === 'number' ? `${size}px` : size;
-            document.documentElement.style.setProperty('--viking-desc-size', val);
-            // If visible, force update so layout recalculates
-            updateVikingTexts();
-          };
-
-          window.increaseVikingDescriptionSize = function(delta) {
-            const computed = getComputedStyle(document.documentElement).getPropertyValue('--viking-desc-size').trim() || '28px';
-            const current = parseFloat(computed);
-            const unit = computed.replace(/^[0-9\.\-]+/, '') || 'px';
-            const newSize = (current + (delta || 8)) + unit;
-            document.documentElement.style.setProperty('--viking-desc-size', newSize);
-            updateVikingTexts();
-          };
-
-          window.resetVikingDescriptionSize = function() {
-            document.documentElement.style.setProperty('--viking-desc-size', '28px');
-            updateVikingTexts();
-          };
-        });
-      </script>
+  setupMarker(
+    'patternSpoonMarker',
+    "Havelok's spoon",
+    "When he was little, Havelok spent a lot of time with Mavi the cook and learned to make lots of delicious recipes and some food disasters too! Havelok still enjoys mixing new ingredients and inventing tasty flavours to go with meat and fish or to add to dough. Cinammon from the traders is his favourite."
+  );
+</script>
 
 </body>
 
