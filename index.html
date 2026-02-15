@@ -71,7 +71,7 @@
         gltf-model="./Assets/5 Vikings Objects/Axe/5VikingsObjectAxe.glb"
         scale="2.5 2.5 2.5" position="0.5 1 0.5"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundHelmet.mp3?v=1746961825461); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+        sound = "src: url(./Assets/Sounds/VTHAR01SoundEffects01.wav); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
       </a-entity>
 
     </a-marker>
@@ -81,7 +81,7 @@
       <a-entity gltf-model="./Assets/5 Vikings Objects/Horn/5VikingsObjectsHorn.glb"
         scale="4 4 4" position="0 1 0"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundHorn.mp3?v=1746961833345); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+        sound = "src: url(./Assets/Sounds/VTHAR01SoundEffects01.wav); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
       </a-entity>
     </a-marker>
 
@@ -91,7 +91,7 @@
         gltf-model="./Assets/5 Vikings Objects/Axe/5VikingsObjectAxe.glb"
         scale="3.5 3.5 3.5" position="0 1 0.2"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundAxe.mp3?v=1746961806895); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+        sound = "src: url(./Assets/Sounds/VTHAR01SoundEffects01.wav); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
       </a-entity>
     </a-marker>
 
@@ -101,7 +101,7 @@
         gltf-model="./Assets/5 Vikings Objects/Bowl/5VikingsObjectBowl.glb"
         scale="4 4 4" position="0 1 0.2"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundBowl.mp3?v=1746961819838); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+        sound = "src: url(./Assets/Sounds/VTHAR01SoundEffects01.wav); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
       </a-entity>
     </a-marker>
 
@@ -111,7 +111,7 @@
         gltf-model="./Assets/5 Vikings Objects/Spoon/5VikingsObjectsSpoon.glb"
         scale="5 5 5" position="0 1 0.2"
         animation="property: rotation; to: 0 0 360; loop: true; dur: 12000; easing: linear"
-        sound = "src: url(https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOFSoundSpoon.mp3?v=1746961813744); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
+        sound = "src: url(./Assets/Sounds/VTHAR01SoundEffects01.wav); autoplay: false; volume: 5; distanceModel: linear; rolloffFactor: 0">
       </a-entity>
     </a-marker>
 
@@ -128,7 +128,7 @@
   let allMarkersDetected = false;
   let overlayTimer = null;
   let lastDetectedMarker = null; // Track the last marker detected
-  const congratsSound = new Audio('https://cdn.glitch.global/e0364600-3d79-40a2-981a-d874044983b4/VSOSoundEffects02.mp3?v=1747015536051');
+  const congratsSound = new Audio('./Assets/Sounds/VTHAR01SoundEffects02.wav');
   
   // Track which sounds have been played
   const soundPlayed = {
