@@ -149,19 +149,19 @@
       let delay = 4000; // default 4s fallback
       switch (lastDetectedMarker) {
         case 'helmet-marker':
-          delay = 32000; // 32 seconds
+          delay = 5000; // 5 seconds
           break;
         case 'patternHornMarker':
-          delay = 40000; // 40 seconds
+          delay = 5000; // 5 seconds
           break;
         case 'patternAxeMarker':
-          delay = 44000; // 44 seconds
+          delay = 5000; // 5 seconds
           break;
         case 'patternBowlMarker':
-          delay = 6000;  // 6 seconds
+          delay = 5000;  // 5 seconds
           break;
         case 'patternSpoonMarker':
-          delay = 28000; // 28 seconds
+          delay = 5000; // 5 seconds
           break;
       }
       console.log(`All markers detected, last marker: ${lastDetectedMarker}, waiting ${delay/1000}s before showing overlay.`);
